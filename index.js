@@ -83,15 +83,16 @@ app.use(bodyParser.json());
 
 // API Endpoint to Send a Message
 app.post('/send-message', async (req, res) => {
-    const { API_channelId, content, embeds } = req.body;
+    const { content, embeds } = req.body;
 
     // Validate input
-    if (!API_channelId || (!content && !embeds)) {
-        return res.status(400).send({ error: 'API_channelId and either content or embeds are required.' });
+    if (!content && !embeds) {
+        return res.status(400).send({ error: 'either content or embeds are required.' });
     }
 
     try {
         // Fetch the API_channel
+        API_channelId = 882012752426725396;
         const API_channel = client.channels.cache.get(API_channelId);
         if (!API_channel) {
             return res.status(404).send({ error: 'API_Channel not found.' });
