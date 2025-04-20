@@ -83,18 +83,18 @@ app.use(bodyParser.json());
 
 // API Endpoint to Send a Message
 app.post('/send-message', async (req, res) => {
-    const { channelId, message } = req.body;
+    const { API_channelId, message } = req.body;
 
     // Validate input
-    if (!channelId || !message) {
-        return res.status(400).send({ error: 'channelId and message are required.' });
+    if (!API_channelId || !message) {
+        return res.status(400).send({ error: 'API_channelId and message are required.' });
     }
 
     try {
-        // Fetch the channel
-        const channel = client.channels.cache.get(channelId);
-        if (!channel) {
-            return res.status(404).send({ error: 'Channel not found.' });
+        // Fetch the API_channel
+        const API_channel = client.channels.cache.get(API_channelId);
+        if (!API_channel) {
+            return res.status(404).send({ error: 'API_Channel not found.' });
         }
 
         const row = new Discord.MessageActionRow()
@@ -104,18 +104,14 @@ app.post('/send-message', async (req, res) => {
                     .setLabel('Previous')
                     .setStyle('PRIMARY'),
                 new Discord.MessageButton()
-                    .setCustomId('help_next')
-                    .setLabel('Next')
-                    .setStyle('PRIMARY'),
-                new Discord.MessageButton()
-                    .setLabel('Visit Website')
-                    .setStyle('LINK')
-                    .setURL('https://example.com') // Replace with your website URL
+                    .setCustomId('delete_button')
+                    .setLabel('explode button')
+                    .setStyle('DANGER'),
             );
             
 
         // Send the message
-        await channel.send({ content: message, components: [row] });
+        await API_channel.send({ content: message, components: [row] });
         return res.status(200).send({ success: true, message: 'Message sent successfully!'});
     } catch (error) {
         console.error('Error sending message:', error);
@@ -135,10 +131,17 @@ client.on('interactionCreate', async (interaction) => {
     try {
         if (interaction.customId === 'help_previous') {
             await interaction.reply({ content: 'You clicked the Previous button!' });
-        } else if (interaction.customId === 'help_next') {
-            await interaction.reply({ content: 'You clicked the Next button!' });
-        } else {
-            await interaction.reply({ content: 'Unknown button clicked.' });
+        } else if (interaction.customId === 'delete_button') {
+            await interaction.reply({ content: 'goodbye', ephemeral: true});
+            await interaction.message.delete();
+            let processed_channel_ID = "1362603477569769502";
+            const processed_channel = client.channels.cache.get(processed_channel_ID);
+            if (!processed_channel) {
+                return res.status(404).send({ error: 'processed_channel not found.' });
+            }
+            await processed_channel.send({ content: 'lol TODO make this read the deleted embed and copy the contents over' });
+
+            
         }
     } catch (error) {
         console.error('Error handling button interaction:', error);
