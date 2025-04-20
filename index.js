@@ -92,11 +92,12 @@ app.post('/send-message', async (req, res) => {
 
     try {
         // Fetch the API_channel
-        API_channelId = 882012752426725396;
-        const API_channel = client.channels.cache.get(API_channelId);
+        let API_channelId = "1212829382419157003"; // 1212829382419157003 = orders
+        const API_channel = await client.channels.fetch(API_channelId);
         if (!API_channel) {
             return res.status(404).send({ error: 'API_Channel not found.' });
         }
+        console.log(`Fetching GAS discord channel with ID: ${API_channelId}`);
 
         // Prepare the message payload
         const messagePayload = {};
@@ -141,16 +142,36 @@ client.on('interactionCreate', async (interaction) => {
         if (interaction.customId === 'help_previous') {
             await interaction.reply({ content: 'You clicked the Previous button!' });
         } else if (interaction.customId === 'delete_button') {
-            await interaction.reply({ content: 'goodbye', ephemeral: true});
-            await interaction.message.delete();
-            let processed_channel_ID = "1362603477569769502";
-            const processed_channel = client.channels.cache.get(processed_channel_ID);
+            const originalEmbed = interaction.message.embeds[0];
+            
+            const newEmbed = new Discord.MessageEmbed()
+            .setTitle(originalEmbed.title || 'No Title')
+            .setDescription(originalEmbed.description || 'No Description')
+            .setColor(originalEmbed.color || '#ffffff') // Default to white if no color is set
+            .setFooter(originalEmbed.footer?.text || '', originalEmbed.footer?.iconURL || null)
+            .setThumbnail(originalEmbed.thumbnail?.url || null)
+            .setTimestamp(originalEmbed.timestamp || null);
+
+            // Copy fields from the original embed
+            if (originalEmbed.fields) {
+                originalEmbed.fields.forEach(field => {
+                    newEmbed.addField(field.name, field.value, field.inline);
+                });
+            }
+
+            let processed_channel_ID = "1362603477569769502"; // 1362603477569769502 = processed-orders
+            const processed_channel = await client.channels.fetch(processed_channel_ID);
+            console.log(`Fetching channel with ID: ${processed_channel_ID}`);
             if (!processed_channel) {
                 return res.status(404).send({ error: 'processed_channel not found.' });
             }
-            await processed_channel.send({ content: 'lol TODO make this read the deleted embed and copy the contents over' });
 
+            await processed_channel.send({ embeds: [newEmbed] });
             
+            let tag = originalEmbed.footer?.text;
+            await interaction.reply({ content: `Successfully deleted order with tag (embed color): ${tag}`, ephemeral: true});
+            await interaction.message.delete();
+
         }
     } catch (error) {
         console.error('Error handling button interaction:', error);
