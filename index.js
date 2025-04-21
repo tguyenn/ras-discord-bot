@@ -92,7 +92,7 @@ app.post('/send-message', async (req, res) => {
 
     try {
         // Fetch the API_channel
-        let API_channelId = "882012752426725396"; // 1212829382419157003 = orders
+        let API_channelId = "1212829382419157003"; // 1212829382419157003 = orders
 	// 882012752426725396 = mod-commands
         const API_channel = await client.channels.fetch(API_channelId);
         if (!API_channel) {
@@ -159,7 +159,7 @@ client.on('interactionCreate', async (interaction) => {
                 });
             }
 
-            let processed_channel_ID = "881744052289167412"; // 1362603477569769502 = processed-orders
+            let processed_channel_ID = "1362603477569769502"; // 1362603477569769502 = processed-orders
 // 881744052289167412 = moderator-only
             const processed_channel = await client.channels.fetch(processed_channel_ID);
             console.log(`Fetching channel with ID: ${processed_channel_ID}`);
@@ -172,7 +172,6 @@ client.on('interactionCreate', async (interaction) => {
             let tag = originalEmbed.footer?.text;
             await interaction.reply({ content: `Successfully deleted order with tag (embed color): ${tag}`, ephemeral: true});
             await interaction.message.delete();
-
         }
     } catch (error) {
         console.error('Error handling button interaction:', error);
@@ -211,6 +210,7 @@ async function readMessagesTime() {
 
                 // Fetch the last 50 messages from the channel
                 const messages = await channel.messages.fetch({ limit: 50 });
+                const botMessages = messages.filter(message => message.author.id === client.user.id).first(10);
 
                 let annieUnprocArr = [];
                 let colinUnprocArr = [];
@@ -220,7 +220,7 @@ async function readMessagesTime() {
                 const annieTag = "365619835939455005";
                 const colinTag = "533956992272695297";
 
-                messages.forEach(message => {
+                botMessages.forEach(message => {
 
                     if((message.embeds.length > 0) && message.content.includes(annieTag)) {
                         annieCount++;
