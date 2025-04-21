@@ -214,13 +214,13 @@ async function readMessagesTime() {
 
                 let annieUnprocArr = [];
                 let colinUnprocArr = [];
-                let annieCount;
-                let colinCount;
+                let annieCount = 0;
+                let colinCount = 0;
+
+                const annieTag = "365619835939455005";
+                const colinTag = "533956992272695297";
 
                 messages.forEach(message => {
-
-                    const annieTag = "365619835939455005";
-                    const colinTag = "533956992272695297";
 
                     if((message.embeds.length > 0) && message.content.includes(annieTag)) {
                         annieCount++;
