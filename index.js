@@ -92,7 +92,8 @@ app.post('/send-message', async (req, res) => {
 
     try {
         // Fetch the API_channel
-        let API_channelId = "1212829382419157003"; // 1212829382419157003 = orders
+        let API_channelId = "882012752426725396"; // 1212829382419157003 = orders
+	// 882012752426725396 = mod-commands
         const API_channel = await client.channels.fetch(API_channelId);
         if (!API_channel) {
             return res.status(404).send({ error: 'API_Channel not found.' });
@@ -146,7 +147,6 @@ client.on('interactionCreate', async (interaction) => {
             
             const newEmbed = new Discord.MessageEmbed()
             .setTitle(originalEmbed.title || 'No Title')
-            .setDescription(originalEmbed.description || 'No Description')
             .setColor(originalEmbed.color || '#ffffff') // Default to white if no color is set
             .setFooter(originalEmbed.footer?.text || '', originalEmbed.footer?.iconURL || null)
             .setThumbnail(originalEmbed.thumbnail?.url || null)
@@ -159,7 +159,8 @@ client.on('interactionCreate', async (interaction) => {
                 });
             }
 
-            let processed_channel_ID = "1362603477569769502"; // 1362603477569769502 = processed-orders
+            let processed_channel_ID = "881744052289167412"; // 1362603477569769502 = processed-orders
+// 881744052289167412 = moderator-only
             const processed_channel = await client.channels.fetch(processed_channel_ID);
             console.log(`Fetching channel with ID: ${processed_channel_ID}`);
             if (!processed_channel) {
