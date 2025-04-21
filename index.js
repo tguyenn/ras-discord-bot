@@ -200,10 +200,10 @@ async function readMessagesTime() {
 
         console.log(`[TIME] It is currently ${currentHour}:${currentMinute} CDT`)
         // Check if it's time
-        if (currentHour === 23 && currentMinute === 5) {
+        if (currentHour === 23 && currentMinute === 10) {
             try {
                 const channel = await client.channels.fetch(targetChannelId);
-                if (!channel || channel.type !== Discord.ChannelType.GuildText) {
+                if (!channel) {
                     console.error("Target channel not found or is not a text channel.");
                     return;
                 }
