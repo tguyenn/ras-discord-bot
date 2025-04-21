@@ -108,13 +108,13 @@ app.post('/send-message', async (req, res) => {
         // Create buttons (optional)
         const row = new Discord.MessageActionRow()
             .addComponents(
-                new Discord.MessageButton()
-                    .setCustomId('help_previous')
-                    .setLabel('Previous')
-                    .setStyle('PRIMARY'),
+                // new Discord.MessageButton()
+                //     .setCustomId('help_previous')
+                //     .setLabel('Previous')
+                //     .setStyle('PRIMARY'),
                 new Discord.MessageButton()
                     .setCustomId('delete_button')
-                    .setLabel('explode button')
+                    .setLabel('Confirm Order Processing')
                     .setStyle('DANGER')
             );
 
@@ -198,9 +198,8 @@ async function readMessagesTime() {
             .map(part => parseInt(part.value, 10));
 
         console.log(`[TIME] It is currently ${currentHour}:${currentMinute} CDT`)
-        // Check if it's time
-        // if (currentHour === 23 && currentMinute === 20) {
-        if(true) { // test
+        if (currentHour === 23 && currentMinute === 0) {
+        // if(true) { // test
             try {
                 const channel = await client.channels.fetch(targetChannelId);
                 if (!channel) {
@@ -210,7 +209,7 @@ async function readMessagesTime() {
 
                 // Fetch the last 50 messages from the channel
                 const messages = await channel.messages.fetch({ limit: 50 });
-                const botMessages = messages.filter(message => message.author.id === client.user.id).first(10);
+                const botMessages = messages.filter(message => message.author.id === client.user.id).first(20);
 
                 let annieUnprocArr = [];
                 let colinUnprocArr = [];
@@ -258,7 +257,6 @@ async function readMessagesTime() {
                     await discuss_channel.send(messageContent);
                 }
 
-                // Add your custom logic to process the messages here
             } catch (error) {
                 console.error("Error reading messages:", error);
             }
