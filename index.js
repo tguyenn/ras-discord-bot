@@ -244,14 +244,14 @@ async function readMessagesTime() {
                 }
                 console.log(`Fetching GAS discord channel with ID: ${discuss_channel_id}`);
                 if(annieCount > 0) {
-                    let messageContent = `<@365619835939455005>, you have ${annieCount} unprocessed items:\n\n`;
+                    let messageContent = `<@${annieTag}>, you have ${annieCount} unprocessed items:\n\n`;
                     annieUnprocArr.forEach((item, index) => {
                         messageContent += `${index + 1}. ${item}\n`;
                     });
                     await discuss_channel.send(messageContent);
                 }
                 if(colinCount > 0) {
-                    let messageContent = `<@533956992272695297>, you have ${colinCount} unprocessed items:\n\n`;
+                    let messageContent = `<@${colinTag}>, you have ${colinCount} unprocessed items:\n\n`;
                     colinUnprocArr.forEach((item, index) => {
                         messageContent += `${index + 1}. ${item}\n`;
                     });
