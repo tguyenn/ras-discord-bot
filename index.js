@@ -176,5 +176,87 @@ client.on('interactionCreate', async (interaction) => {
         }
     } catch (error) {
         console.error('Error handling button interaction:', error);
-    }
+    }    
+});
+
+
+// Function to read messages at 10 PM every day
+async function readMessagesTime() {
+    const targetChannelId = "1212829382419157003"; // Replace with the ID of the channel to read messages from
+
+    // Check the time every minute
+    setInterval(async () => {
+        const now = new Date();
+        const currentHour = now.getHours();
+        const currentMinute = now.getMinutes();
+
+        // Check if it's time
+        if (currentHour === 23 && currentMinute === 0) {
+            try {
+                const channel = await client.channels.fetch(targetChannelId);
+                if (!channel || channel.type !== Discord.ChannelType.GuildText) {
+                    console.error("Target channel not found or is not a text channel.");
+                    return;
+                }
+
+                // Fetch the last 50 messages from the channel
+                const messages = await channel.messages.fetch({ limit: 50 });
+
+                let annieUnprocArr = [];
+                let colinUnprocArr = [];
+                let annieCount;
+                let colinCount;
+
+                messages.forEach(message => {
+
+                    const annieTag = "365619835939455005";
+                    const colinTag = "533956992272695297";
+
+                    if(message.content.includes(annieTag)) {
+                        annieCount++;
+                        annieUnprocArr.push(message.embeds[0].footer?.text);
+                    }
+                        
+                    if(message.content.includes(colinTag)) {
+                        colinCount++;
+                        colinUnprocArr.push(message.embeds[0].footer?.text);
+                    }
+
+                    console.log(`[${message.author.tag}]: ${message.content}`);
+                });
+
+                // print shame in order-discussion channel :(
+                let discuss_channel_id = "1229492853739225088";
+                const discuss_channel = await client.channels.fetch(discuss_channel_id);
+                if (!discuss_channel) {
+                    return res.status(404).send({ error: 'discuss_channel_id not found.' });
+                }
+                console.log(`Fetching GAS discord channel with ID: ${discuss_channel_id}`);
+                if(annieCount) {
+                    let messageContent = `<@365619835939455005>, you have ${annieCount} unprocessed items:\n\n`;
+                    annieUnprocArr.forEach((item, index) => {
+                        messageContent += `${index + 1}. ${item}\n`;
+                    });
+                    await discuss_channel.send(messageContent);
+                }
+                if(colinCount) {
+                    let messageContent = `<@533956992272695297>, you have ${colinCount} unprocessed items:\n\n`;
+                    colinUnprocArr.forEach((item, index) => {
+                        messageContent += `${index + 1}. ${item}\n`;
+                    });
+                    await discuss_channel.send(messageContent);
+                }
+
+                // Add your custom logic to process the messages here
+            } catch (error) {
+                console.error("Error reading messages:", error);
+            }
+        }
+    }, 60000); // Check every minute
+}
+
+// Call the function after the bot is ready
+client.once('ready', () => {
+    console.log(`${client.user.tag} is online!`);
+    readMessagesTime();
 });
