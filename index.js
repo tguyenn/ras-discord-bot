@@ -143,8 +143,19 @@ client.on('interactionCreate', async (interaction) => {
         if (interaction.customId === 'help_previous') {
             await interaction.reply({ content: 'You clicked the Previous button!' });
         } else if (interaction.customId === 'delete_button') {
+
+            const annieTag = "365619835939455005";
+            const colinTag = "533956992272695297";
+            if ((interaction.user.id === annieTag) || (interaction.user.id === colinTag)) {
+                console.log(`Interaction triggered by the specific user: ${interaction.user.tag}`);
+                await interaction.reply({ content: "You are authorized to perform this action!", ephemeral: true });
+            } else {
+                console.log(`Interaction triggered by another user: ${interaction.user.tag}`);
+                await interaction.reply({ content: `hahah look at the silly @<${interaction.user.tag}> that tried to delete an order`});
+                return;
+            }  
+
             const originalEmbed = interaction.message.embeds[0];
-            
             const newEmbed = new Discord.MessageEmbed()
             .setTitle(originalEmbed.title || 'No Title')
             .setColor(originalEmbed.color || '#ffffff') // Default to white if no color is set
@@ -209,8 +220,8 @@ async function readMessagesTime() {
 
                 // Fetch the last 50 messages from the channel
                 const messages = await channel.messages.fetch({ limit: 50 });
-                const botMessages = messages.filter(message => message.author.id === client.user.id).first(20);
-
+                const botMessages = messages.filter(message => message.author.id === client.user.id).slice(0, 20);
+                
                 let annieUnprocArr = [];
                 let colinUnprocArr = [];
                 let annieCount = 0;
