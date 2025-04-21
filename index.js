@@ -200,7 +200,7 @@ async function readMessagesTime() {
 
         console.log(`[TIME] It is currently ${currentHour}:${currentMinute} CDT`)
         // Check if it's time
-        if (currentHour === 23 && currentMinute === 10) {
+        if (currentHour === 23 && currentMinute === 20) {
             try {
                 const channel = await client.channels.fetch(targetChannelId);
                 if (!channel) {
@@ -221,12 +221,12 @@ async function readMessagesTime() {
                     const annieTag = "365619835939455005";
                     const colinTag = "533956992272695297";
 
-                    if(message.content.includes(annieTag)) {
+                    if((message.embeds.length > 0) && message.content.includes(annieTag)) {
                         annieCount++;
                         annieUnprocArr.push(message.embeds[0].footer?.text);
                     }
                         
-                    if(message.content.includes(colinTag)) {
+                    if((message.embeds.length > 0) && message.content.includes(colinTag)) {
                         colinCount++;
                         colinUnprocArr.push(message.embeds[0].footer?.text);
                     }
