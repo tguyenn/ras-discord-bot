@@ -198,6 +198,7 @@ async function readMessagesTime() {
             .filter(part => part.type === 'hour' || part.type === 'minute')
             .map(part => parseInt(part.value, 10));
 
+        console.log(`[TIME] It is currently ${currentHour}:${currentMinute} CDT`)
         // Check if it's time
         if (currentHour === 23 && currentMinute === 5) {
             try {
