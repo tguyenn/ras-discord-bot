@@ -186,12 +186,20 @@ async function readMessagesTime() {
 
     // Check the time every minute
     setInterval(async () => {
+        // Get the current time in CDT
         const now = new Date();
-        const currentHour = now.getHours();
-        const currentMinute = now.getMinutes();
+        const formatter = new Intl.DateTimeFormat('en-US', {
+            timeZone: 'America/Chicago', // CDT timezone
+            hour: 'numeric',
+            minute: 'numeric',
+            hour12: false,
+        });
+        const [currentHour, currentMinute] = formatter.formatToParts(now)
+            .filter(part => part.type === 'hour' || part.type === 'minute')
+            .map(part => parseInt(part.value, 10));
 
         // Check if it's time
-        if (currentHour === 23 && currentMinute === 0) {
+        if (currentHour === 23 && currentMinute === 5) {
             try {
                 const channel = await client.channels.fetch(targetChannelId);
                 if (!channel || channel.type !== Discord.ChannelType.GuildText) {
