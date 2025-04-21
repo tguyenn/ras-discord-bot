@@ -200,7 +200,8 @@ async function readMessagesTime() {
 
         console.log(`[TIME] It is currently ${currentHour}:${currentMinute} CDT`)
         // Check if it's time
-        if (currentHour === 23 && currentMinute === 20) {
+        // if (currentHour === 23 && currentMinute === 20) {
+        if(true) { // test
             try {
                 const channel = await client.channels.fetch(targetChannelId);
                 if (!channel) {
@@ -233,6 +234,7 @@ async function readMessagesTime() {
 
                     console.log(`[${message.author.tag}]: ${message.content}`);
                 });
+                console.log(`Annie: ${annieCount}, Colin: ${colinCount}`);
 
                 // print shame in order-discussion channel :(
                 let discuss_channel_id = "1229492853739225088";
@@ -241,14 +243,14 @@ async function readMessagesTime() {
                     return res.status(404).send({ error: 'discuss_channel_id not found.' });
                 }
                 console.log(`Fetching GAS discord channel with ID: ${discuss_channel_id}`);
-                if(annieCount) {
+                if(annieCount > 0) {
                     let messageContent = `<@365619835939455005>, you have ${annieCount} unprocessed items:\n\n`;
                     annieUnprocArr.forEach((item, index) => {
                         messageContent += `${index + 1}. ${item}\n`;
                     });
                     await discuss_channel.send(messageContent);
                 }
-                if(colinCount) {
+                if(colinCount > 0) {
                     let messageContent = `<@533956992272695297>, you have ${colinCount} unprocessed items:\n\n`;
                     colinUnprocArr.forEach((item, index) => {
                         messageContent += `${index + 1}. ${item}\n`;
