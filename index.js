@@ -114,7 +114,7 @@ app.post('/send-message', async (req, res) => {
                 //     .setStyle('PRIMARY'),
                 new Discord.MessageButton()
                     .setCustomId('delete_button')
-                    .setLabel('Confirm Order Processing')
+                    .setLabel('Explode💥')
                     .setStyle('DANGER')
             );
 
@@ -146,12 +146,12 @@ client.on('interactionCreate', async (interaction) => {
 
             const annieTag = "365619835939455005";
             const colinTag = "533956992272695297";
-            if ((interaction.user.id === annieTag) || (interaction.user.id === colinTag)) {
+            const tobyTag = "339824792092016640";
+            if ((interaction.user.id === annieTag) || (interaction.user.id === colinTag) || (interaction.user.id === tobyTag)) {
                 console.log(`Interaction triggered by the specific user: ${interaction.user.tag}`);
-                await interaction.reply({ content: "You are authorized to perform this action!", ephemeral: true });
             } else {
                 console.log(`Interaction triggered by another user: ${interaction.user.tag}`);
-                await interaction.reply({ content: `hahah look at the silly @<${interaction.user.tag}> that tried to delete an order`});
+                await interaction.reply({ content: `hahah look at the silly <@${interaction.user.id}> that tried to delete an order`});
                 return;
             }  
 
