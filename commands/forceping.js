@@ -19,19 +19,28 @@ module.exports = (client, config) => {
          * @param {CommandInteraction} interaction - The interaction object representing the slash command.
          */
         async execute(interaction) {
-            const targetChannelId = "1212829382419157003"; // Replace with the ID of the channel to read messages from
+            if (!interaction) {
+                console.error("Interaction object is null or undefined.");
+                return;
+            }
+
+            const targetChannelId = "1365928612569677944"; // Replace with the ID of the channel to read messages from
 
             try {
                 const channel = await client.channels.fetch(targetChannelId);
                 if (!channel || channel.type !== 'GUILD_TEXT') { // Use 'GUILD_TEXT' for older versions
                     console.error("Target channel not found or is not a text channel.");
-                    await interaction.reply({ content: "Target channel not found or is not a text channel.", ephemeral: true });
+                    if (!interaction.replied && !interaction.deferred) {
+                        await interaction.reply({ content: "Target channel not found or is not a text channel.", ephemeral: true });
+                    }
                     return;
                 }
 
                 // Fetch the last 50 messages from the channel
                 const messages = await channel.messages.fetch({ limit: 50 });
-                const botMessages = messages.filter(message => message.author.id === client.user.id).slice(0, 20);
+                const botMessages = Array.from(messages.values()) // Convert Collection to array
+                    .filter(message => message.author.id === client.user.id)
+                    .slice(0, 20);
 
                 let annieUnprocArr = [];
                 let colinUnprocArr = [];
@@ -60,7 +69,9 @@ module.exports = (client, config) => {
                 const discussChannel = await client.channels.fetch(discussChannelId);
                 if (!discussChannel || discussChannel.type !== 'GUILD_TEXT') { // Use 'GUILD_TEXT' for older versions
                     console.error("Discussion channel not found or is not a text channel.");
-                    await interaction.reply({ content: "Discussion channel not found or is not a text channel.", ephemeral: true });
+                    if (!interaction.replied && !interaction.deferred) {
+                        await interaction.reply({ content: "Discussion channel not found or is not a text channel.", ephemeral: true });
+                    }
                     return;
                 }
 
@@ -80,10 +91,12 @@ module.exports = (client, config) => {
                     await discussChannel.send(messageContent);
                 }
 
-                await interaction.reply({ content: "Force ping completed successfully!", ephemeral: true });
+                if (!interaction.replied && !interaction.deferred) {
+                    await interaction.reply({ content: "Force ping completed successfully!", ephemeral: true });
+                }
             } catch (error) {
                 console.error("Error reading messages:", error);
-                if (interaction && interaction.reply) {
+                if (interaction && !interaction.replied && !interaction.deferred) {
                     await interaction.reply({ content: "An error occurred while processing the command.", ephemeral: true });
                 }
             }

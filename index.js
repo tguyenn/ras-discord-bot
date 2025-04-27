@@ -137,56 +137,74 @@ app.listen(PORT, () => {
 
 // Interaction handling
 client.on('interactionCreate', async (interaction) => {
-    if (!interaction.isButton()) return;
-
     try {
-        if (interaction.customId === 'help_previous') {
-            await interaction.reply({ content: 'You clicked the Previous button!' });
-        } else if (interaction.customId === 'delete_button') {
-
-            const annieTag = "365619835939455005";
-            const colinTag = "533956992272695297";
-            const tobyTag = "339824792092016640";
-            if ((interaction.user.id === annieTag) || (interaction.user.id === colinTag) || (interaction.user.id === tobyTag)) {
-                console.log(`Interaction triggered by the specific user: ${interaction.user.tag}`);
-            } else {
-                console.log(`Interaction triggered by another user: ${interaction.user.tag}`);
-                await interaction.reply({ content: `hahah look at the silly <@${interaction.user.id}> that tried to delete an order`, ephemeral: true});
+        // Handle slash commands
+        if (interaction.isCommand()) {
+            const command = client.commands.get(interaction.commandName);
+            if (!command) {
+                console.error(`No command matching ${interaction.commandName} was found.`);
+                await interaction.reply({ content: 'Command not found.', ephemeral: true });
                 return;
-            }  
-
-            const originalEmbed = interaction.message.embeds[0];
-            const newEmbed = new Discord.MessageEmbed()
-            .setTitle(originalEmbed.title || 'No Title')
-            .setColor(originalEmbed.color || '#ffffff') // Default to white if no color is set
-            .setFooter(originalEmbed.footer?.text || '', originalEmbed.footer?.iconURL || null)
-            .setThumbnail(originalEmbed.thumbnail?.url || null)
-            .setTimestamp(originalEmbed.timestamp || null);
-
-            // Copy fields from the original embed
-            if (originalEmbed.fields) {
-                originalEmbed.fields.forEach(field => {
-                    newEmbed.addField(field.name, field.value, field.inline);
-                });
             }
 
-            let processed_channel_ID = "1362603477569769502"; // 1362603477569769502 = processed-orders
-// 881744052289167412 = moderator-only
-            const processed_channel = await client.channels.fetch(processed_channel_ID);
-            console.log(`Fetching channel with ID: ${processed_channel_ID}`);
-            if (!processed_channel) {
-                return res.status(404).send({ error: 'processed_channel not found.' });
-            }
+            // Execute the command
+            await command.execute(interaction);
+            return;
+        }
 
-            await processed_channel.send({ embeds: [newEmbed] });
-            
-            let tag = originalEmbed.footer?.text;
-            await interaction.reply({ content: `💥💥💥'd order with tag (embed color): ${tag}`, ephemeral: true});
-            await interaction.message.delete();
+        // Handle button interactions
+        if (interaction.isButton()) {
+            if (interaction.customId === 'help_previous') {
+                await interaction.reply({ content: 'You clicked the Previous button!' });
+            } else if (interaction.customId === 'delete_button') {
+                const annieTag = "365619835939455005";
+                const colinTag = "533956992272695297";
+                const tobyTag = "339824792092016640";
+
+                if ((interaction.user.id === annieTag) || (interaction.user.id === colinTag) || (interaction.user.id === tobyTag)) {
+                    console.log(`Interaction triggered by the specific user: ${interaction.user.tag}`);
+                } else {
+                    console.log(`Interaction triggered by another user: ${interaction.user.tag}`);
+                    await interaction.reply({ content: `hahah look at the silly <@${interaction.user.id}> that tried to delete an order`, ephemeral: true });
+                    return;
+                }
+
+                const originalEmbed = interaction.message.embeds[0];
+                const newEmbed = new Discord.MessageEmbed()
+                    .setTitle(originalEmbed.title || 'No Title')
+                    .setColor(originalEmbed.color || '#ffffff') // Default to white if no color is set
+                    .setFooter(originalEmbed.footer?.text || '', originalEmbed.footer?.iconURL || null)
+                    .setThumbnail(originalEmbed.thumbnail?.url || null)
+                    .setTimestamp(originalEmbed.timestamp || null);
+
+                // Copy fields from the original embed
+                if (originalEmbed.fields) {
+                    originalEmbed.fields.forEach(field => {
+                        newEmbed.addField(field.name, field.value, field.inline);
+                    });
+                }
+
+                const processed_channel_ID = "1362603477569769502"; // 1362603477569769502 = processed-orders
+                const processed_channel = await client.channels.fetch(processed_channel_ID);
+                console.log(`Fetching channel with ID: ${processed_channel_ID}`);
+                if (!processed_channel) {
+                    console.error('Processed channel not found.');
+                    return;
+                }
+
+                await processed_channel.send({ embeds: [newEmbed] });
+
+                let tag = originalEmbed.footer?.text;
+                await interaction.reply({ content: `💥💥💥'd order with tag (embed color): ${tag}`, ephemeral: true });
+                await interaction.message.delete();
+            }
         }
     } catch (error) {
-        console.error('Error handling button interaction:', error);
-    }    
+        console.error('Error handling interaction:', error);
+        if (interaction.isCommand() && !interaction.replied) {
+            await interaction.reply({ content: 'An error occurred while executing the command.', ephemeral: true });
+        }
+    }
 });
 
 
@@ -280,3 +298,4 @@ client.once('ready', () => {
     console.log(`${client.user.tag} is online!`);
     readMessagesTime();
 });
+
