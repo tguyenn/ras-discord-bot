@@ -1,6 +1,6 @@
 // Imports
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { CommandInteraction, Client } = require('discord.js');
+const { CommandInteraction, Client, ChannelType } = require('discord.js');
 
 /**
  * @param {Client} client - The Discord client instance.
@@ -23,7 +23,7 @@ module.exports = (client, config) => {
 
             try {
                 const channel = await client.channels.fetch(targetChannelId);
-                if (!channel || !channel.isTextBased()) {
+                if (!channel || channel.type !== ChannelType.GuildText) {
                     console.error("Target channel not found or is not a text channel.");
                     await interaction.reply({ content: "Target channel not found or is not a text channel.", ephemeral: true });
                     return;
@@ -58,7 +58,7 @@ module.exports = (client, config) => {
                 // Print shame in order-discussion channel
                 const discussChannelId = "1229492853739225088";
                 const discussChannel = await client.channels.fetch(discussChannelId);
-                if (!discussChannel || !discussChannel.isTextBased()) {
+                if (!discussChannel || discussChannel.type !== ChannelType.GuildText) {
                     console.error("Discussion channel not found or is not a text channel.");
                     await interaction.reply({ content: "Discussion channel not found or is not a text channel.", ephemeral: true });
                     return;
@@ -83,7 +83,9 @@ module.exports = (client, config) => {
                 await interaction.reply({ content: "Force ping completed successfully!", ephemeral: true });
             } catch (error) {
                 console.error("Error reading messages:", error);
-                await interaction.reply({ content: "An error occurred while processing the command.", ephemeral: true });
+                if (interaction && interaction.reply) {
+                    await interaction.reply({ content: "An error occurred while processing the command.", ephemeral: true });
+                }
             }
         }
     };
