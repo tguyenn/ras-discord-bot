@@ -92,7 +92,7 @@ app.post('/send-message', async (req, res) => {
 
     try {
         // Fetch the API_channel
-        let API_channelId = "1212829382419157003"; // 1212829382419157003 = orders
+        let API_channelId = "1365928612569677944"; // 1365928612569677944 = orders
 	// 882012752426725396 = mod-commands
         const API_channel = await client.channels.fetch(API_channelId);
         if (!API_channel) {
@@ -151,7 +151,7 @@ client.on('interactionCreate', async (interaction) => {
                 console.log(`Interaction triggered by the specific user: ${interaction.user.tag}`);
             } else {
                 console.log(`Interaction triggered by another user: ${interaction.user.tag}`);
-                await interaction.reply({ content: `hahah look at the silly <@${interaction.user.id}> that tried to delete an order`});
+                await interaction.reply({ content: `hahah look at the silly <@${interaction.user.id}> that tried to delete an order`, ephemeral: true});
                 return;
             }  
 
@@ -181,7 +181,7 @@ client.on('interactionCreate', async (interaction) => {
             await processed_channel.send({ embeds: [newEmbed] });
             
             let tag = originalEmbed.footer?.text;
-            await interaction.reply({ content: `Successfully deleted order with tag (embed color): ${tag}`, ephemeral: true});
+            await interaction.reply({ content: `💥💥💥'd order with tag (embed color): ${tag}`, ephemeral: true});
             await interaction.message.delete();
         }
     } catch (error) {
