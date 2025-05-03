@@ -104,21 +104,17 @@ app.post('/send-message', async (req, res) => {
         const messagePayload = {};
         if (content) messagePayload.content = content;
         if (embeds) messagePayload.embeds = embeds;
+		console.log('Copied message payload!');
+		console.log(embeds);
 
         // Create buttons (optional)
         const row = new Discord.MessageActionRow()
             .addComponents(
-                // new Discord.MessageButton()
-                //     .setCustomId('help_previous')
-                //     .setLabel('Previous')
-                //     .setStyle('PRIMARY'),
                 new Discord.MessageButton()
                     .setCustomId('delete_button')
                     .setLabel('Explode💥')
                     .setStyle('DANGER')
             );
-
-        // Add buttons to the payload if needed
         messagePayload.components = [row];
 
         // Send the message
@@ -170,6 +166,8 @@ client.on('interactionCreate', async (interaction) => {
                 }
 
                 const originalEmbed = interaction.message.embeds[0];
+				const originalContent = interaction.message.content;
+
                 const newEmbed = new Discord.MessageEmbed()
                     .setTitle(originalEmbed.title || 'No Title')
                     .setColor(originalEmbed.color || '#ffffff') // Default to white if no color is set
@@ -192,7 +190,11 @@ client.on('interactionCreate', async (interaction) => {
                     return;
                 }
 
-                await processed_channel.send({ embeds: [newEmbed] });
+				let strippedContent = originalContent.split(' ').slice(1).join(' '); // remove ping from message before reposting
+                await processed_channel.send({ 
+					content: strippedContent || 'no message content oh no',
+					embeds: [newEmbed] 
+				});
 
                 let tag = originalEmbed.footer?.text;
                 await interaction.reply({ content: `💥💥💥'd order with tag (embed color): ${tag}`, ephemeral: true });
@@ -270,7 +272,7 @@ async function readMessagesTime() {
                 if (!discuss_channel) {
                     return res.status(404).send({ error: 'discuss_channel_id not found.' });
                 }
-                console.log(`Fetching GAS discord channel with ID: ${discuss_channel_id}`);
+                console.log(`Fetching discussion discord channel with ID: ${discuss_channel_id}`);
                 if(annieCount > 0) {
                     let messageContent = `<@${annieTag}>, you have ${annieCount} unprocessed items:\n\n`;
                     annieUnprocArr.forEach((item, index) => {
