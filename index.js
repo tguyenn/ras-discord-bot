@@ -85,6 +85,9 @@ app.use(bodyParser.json());
 app.post('/send-message', async (req, res) => {
     const { content, embeds } = req.body;
 
+	console.log("req: " + req);
+	console.log("body: " + req.body);
+
     // Validate input
     if (!content && !embeds) {
         return res.status(400).send({ error: 'either content or embeds are required.' });
