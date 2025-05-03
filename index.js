@@ -106,10 +106,14 @@ app.post('/send-message', async (req, res) => {
         if (embeds) messagePayload.embeds = embeds;
 		console.log('Copied message payload!');
 		// console.log(embeds);
-		embeds.fields.forEach(field => {
-			console.log(`field: ${field.name} has value of ${field.value}`);
-		})
 
+		if (embeds && embeds.fields) {
+			embeds.fields.forEach(field => {
+				console.log(`field: ${field.name} has value of ${field.value}`);
+			});
+		} else {
+			console.warn('No fields found in the embeds object.');
+		}
 
         // Create buttons (optional)
         const row = new Discord.MessageActionRow()
