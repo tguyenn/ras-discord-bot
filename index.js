@@ -91,7 +91,7 @@ app.post('/send-message', async (req, res) => {
     // Log the content and embeds separately
     console.log("Content:", content);
     console.log("Embeds:", JSON.stringify(embeds, null, 2));
-	
+
     // Validate input
     if (!content && !embeds) {
         return res.status(400).send({ error: 'either content or embeds are required.' });
@@ -114,20 +114,12 @@ app.post('/send-message', async (req, res) => {
 		console.log('Copied message payload!');
 		// console.log(embeds);
 
-		if (embeds && embeds.fields) {
-			embeds.fields.forEach(field => {
-				console.log(`field: ${field.name} has value of ${field.value}`);
-			});
-		} else {
-			console.warn('No fields found in the embeds object.');
-		}
-
         // Create buttons (optional)
         const row = new Discord.MessageActionRow()
             .addComponents(
                 new Discord.MessageButton()
                     .setCustomId('delete_button')
-                    .setLabel('Explode💥')
+                    .setLabel('Explode <a:explode:1368191527028785172>')
                     .setStyle('DANGER')
             );
         messagePayload.components = [row];
@@ -212,7 +204,7 @@ client.on('interactionCreate', async (interaction) => {
 				});
 
                 let tag = originalEmbed.footer?.text;
-                await interaction.reply({ content: `💥💥💥'd order with tag (embed color): ${tag}`, ephemeral: true });
+                await interaction.reply({ content: `<a:explode:1368191527028785172> <a:explode:1368191527028785172> <a:explode:1368191527028785172> 'd order with tag (embed color): ${tag}`, ephemeral: true });
                 await interaction.message.delete();
             }
         }
