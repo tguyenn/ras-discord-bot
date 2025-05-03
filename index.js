@@ -105,7 +105,11 @@ app.post('/send-message', async (req, res) => {
         if (content) messagePayload.content = content;
         if (embeds) messagePayload.embeds = embeds;
 		console.log('Copied message payload!');
-		console.log(embeds);
+		// console.log(embeds);
+		embeds.fields.forEach(field => {
+			console.log(`field: ${field.name} has value of ${field.value}`);
+		})
+
 
         // Create buttons (optional)
         const row = new Discord.MessageActionRow()
