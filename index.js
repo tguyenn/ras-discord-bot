@@ -119,7 +119,7 @@ app.post('/send-message', async (req, res) => {
             .addComponents(
                 new Discord.MessageButton()
                     .setCustomId('delete_button')
-                    .setLabel('Explode <a:explode:1368191527028785172>')
+                    .setLabel('Explode 💣😱')
                     .setStyle('DANGER')
             );
         messagePayload.components = [row];
@@ -168,7 +168,7 @@ client.on('interactionCreate', async (interaction) => {
                     console.log(`Interaction triggered by the specific user: ${interaction.user.tag}`);
                 } else {
                     console.log(`Interaction triggered by another user: ${interaction.user.tag}`);
-                    await interaction.reply({ content: `hahah look at the silly <@${interaction.user.id}> that tried to delete an order`, ephemeral: true });
+                    await interaction.reply({ content: `<@${interaction.user.id}> not authorized to process order 😔`, ephemeral: true });
                     return;
                 }
 
