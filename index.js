@@ -209,7 +209,8 @@ client.on('interactionCreate', async (interaction) => {
 				const scriptURL = "https://script.google.com/macros/s/AKfycbyhxaNOacfgVzIkQDE8rUgzr6wEyYG-AzCt_DqcLRpTVY88478Y93uxJBQcHxNomPPm/exec";
 				const numItems = originalEmbed.title.split(' ')[0]; // grab number of items to process			
                 const tag = originalEmbed.footer?.text;
-				const data = { numItems: `${numItems}`, tag: `${tag}`};
+				const committeeName = originalEmbed.fields[0].value;
+				const data = { numItems: `${numItems}`, tag: `${tag}`, committeeName: `${committeeName}`};
 				try {
 					const response = await axios.post(scriptURL, data);
 					console.log('Response:', response.data);
