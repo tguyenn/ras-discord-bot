@@ -3,6 +3,7 @@ const Discord = require('discord.js');
 const express = require('express'); // Import Express
 const bodyParser = require('body-parser'); // Import Body Parser for JSON parsing
 const config = require('./config/config.json');
+const axios = require('axios');
 
 // Discord client
 var intents = [
@@ -119,7 +120,7 @@ app.post('/send-message', async (req, res) => {
             .addComponents(
                 new Discord.MessageButton()
                     .setCustomId('delete_button')
-                    .setLabel('Explode 💣😱')
+                    .setLabel('Explode 💣💥')
                     .setStyle('DANGER')
             );
         messagePayload.components = [row];
@@ -203,8 +204,21 @@ client.on('interactionCreate', async (interaction) => {
 					embeds: [newEmbed] 
 				});
 
-                let tag = originalEmbed.footer?.text;
-                await interaction.reply({ content: `<a:explode:1368191527028785172> <a:explode:1368191527028785172> <a:explode:1368191527028785172> 'd order with tag (embed color): ${tag}`, ephemeral: true });
+				// mark checkboxes in budget sheet
+				// grab numItems and tag from embed
+				const scriptURL = "https://script.google.com/macros/s/AKfycbyhxaNOacfgVzIkQDE8rUgzr6wEyYG-AzCt_DqcLRpTVY88478Y93uxJBQcHxNomPPm/exec";
+				const numItems = originalEmbed.title.split(' ')[0]; // grab number of items to process			
+                const tag = originalEmbed.footer?.text;
+				const data = { numItems: `${numItems}`, tag: `${tag}`};
+				try {
+					const response = await axios.post(scriptURL, data);
+					console.log('Response:', response.data);
+				} catch (error) {
+					console.error('Error sending data to Google Sheet:', error);
+				}
+
+
+                await interaction.reply({ content: `<a:explode:1368191527028785172> <a:explode:1368191527028785172> <a:explode:1368191527028785172> 'd order with tag: ${tag}`, ephemeral: true });
                 await interaction.message.delete();
             }
         }
