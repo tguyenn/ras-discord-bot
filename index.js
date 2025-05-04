@@ -211,6 +211,7 @@ client.on('interactionCreate', async (interaction) => {
                 const tag = originalEmbed.footer?.text;
 				const committeeName = originalEmbed.fields[0].value;
 				const data = { numItems: `${numItems}`, tag: `${tag}`, committeeName: `${committeeName}`};
+				console.log(`sending numitems: ${numItems} tag: ${tag}, committee: ${committeeName}`);
 				try {
 					const response = await axios.post(scriptURL, data);
 					console.log('Response:', response.data);
