@@ -206,18 +206,18 @@ client.on('interactionCreate', async (interaction) => {
 
 				// mark checkboxes in budget sheet
 				// grab numItems and tag from embed
-				const scriptURL = "https://script.google.com/macros/s/AKfycbyhxaNOacfgVzIkQDE8rUgzr6wEyYG-AzCt_DqcLRpTVY88478Y93uxJBQcHxNomPPm/exec";
-				const numItems = originalEmbed.title.split(' ')[0]; // grab number of items to process			
-                const tag = originalEmbed.footer?.text;
-				const committeeName = originalEmbed.fields[0].value;
-				const data = { numItems: `${numItems}`, tag: `${tag}`, committeeName: `${committeeName}`};
-				console.log(`sending numitems: ${numItems} tag: ${tag}, committee: ${committeeName}`);
-				try {
-					const response = await axios.post(scriptURL, data);
-					console.log('Response:', response.data);
-				} catch (error) {
-					console.error('Error sending data to Google Sheet:', error);
-				}
+				// const scriptURL = "https://script.google.com/macros/s/AKfycbyhxaNOacfgVzIkQDE8rUgzr6wEyYG-AzCt_DqcLRpTVY88478Y93uxJBQcHxNomPPm/exec";
+				// const numItems = originalEmbed.title.split(' ')[0]; // grab number of items to process			
+                // const tag = originalEmbed.footer?.text;
+				// const committeeName = originalEmbed.fields[0].value;
+				// const data = { numItems: `${numItems}`, tag: `${tag}`, committeeName: `${committeeName}`};
+				// console.log(`sending numitems: ${numItems} tag: ${tag}, committee: ${committeeName}`);
+				// try {
+				// 	const response = await axios.post(scriptURL, data);
+				// 	console.log('Response:', response.data);
+				// } catch (error) {
+				// 	console.error('Error sending data to Google Sheet:', error);
+				// }
 
 
                 await interaction.reply({ content: `<a:explode:1368191527028785172> <a:explode:1368191527028785172> <a:explode:1368191527028785172> 'd order with tag: ${tag}`, ephemeral: true });
