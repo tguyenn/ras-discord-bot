@@ -219,8 +219,7 @@ client.on('interactionCreate', async (interaction) => {
 				// 	console.error('Error sending data to Google Sheet:', error);
 				// }
 
-
-                await interaction.reply({ content: `<a:explode:1368191527028785172> <a:explode:1368191527028785172> <a:explode:1368191527028785172> 'd order with tag: ${tag}`, ephemeral: true });
+                // await interaction.reply({ content: `<a:explode:1368191527028785172> <a:explode:1368191527028785172> <a:explode:1368191527028785172> 'd order with tag: ${tag}`, ephemeral: true });
                 await interaction.message.delete();
             }
         }
