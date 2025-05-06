@@ -26,9 +26,9 @@ module.exports = (client, config) => {
             .setTitle('Help Menu!')
             .setColor('#FF6700');
         
-        // Add current prefix section if prefix is set
-        if (config.prefix !== "") {
-            embed.addField('Current Prefix', `The current prefix is: \`${config.prefix}\``, false);
+        // Add current PREFIX section if PREFIX is set
+        if (config.PREFIX !== "") {
+            embed.addField('Current PREFIX', `The current PREFIX is: \`${config.PREFIX}\``, false);
         }
         
         // Looping through the collected categories to setup the help menu

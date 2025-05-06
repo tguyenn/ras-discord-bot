@@ -21,20 +21,20 @@ module.exports = (client, config) => {
         console.log(`${client.user.username} is ready to use!`)
         const rest = new REST({
             version: '9'
-        }).setToken(config.token);
+        }).setBOT_TOKEN(config.BOT_TOKEN);
 
         try {
-            console.log(client.slashCommands, config.production);
-            if (config.production) {
+            console.log(client.slashCommands, config.PRODUCTION);
+            if (config.PRODUCTION) {
                 await rest.put(Routes.applicationCommands(client.user.id), {
                     body: client.slashCommands
                 });
                 console.log('Successfully registered exisiting slash commands globally.');
             } else {
-                await rest.put(Routes.applicationGuildCommands(client.user.id, config.guild_id), {
+                await rest.put(Routes.applicationGuildCommands(client.user.id, config.GUILD_ID), {
                     body: client.slashCommands
                 });
-                console.log(`Successfully registered exisiting slash commands in guild with id: ${config.guild_id}.`);
+                console.log(`Successfully registered exisiting slash commands in guild with id: ${config.GUILD_ID}.`);
             }
         } catch (err) {
             if (err) console.error(err);

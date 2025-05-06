@@ -42,8 +42,8 @@ for (const command of commands) {
     console.log(`Loading ${cmdFile.name}..`);
     if (Boolean(cmdFile.category) && !client.commandCategories[cmdFile.category]) client.commandCategories[cmdFile.category] = [cmdFile];
     else if (Boolean(cmdFile.category) && client.commandCategories[cmdFile.category]) client.commandCategories[cmdFile.category] = [...client.commandCategories[cmdFile.category], cmdFile];
-    else if (!Boolean(cmdFile.category) && !client.commandCategories[config.no_category_name]) client.commandCategories[config.no_category_name] = [cmdFile];
-    else client.commandCategories[config.no_category_name] = [...client.commandCategories[config.no_category_name], cmdFile];
+    else if (!Boolean(cmdFile.category) && !client.commandCategories[config.NO_CATEGORY_NAME]) client.commandCategories[config.NO_CATEGORY_NAME] = [cmdFile];
+    else client.commandCategories[config.NO_CATEGORY_NAME] = [...client.commandCategories[config.NO_CATEGORY_NAME], cmdFile];
     if (cmdFile.data != null) client.slashCommands.push(cmdFile.data.toJSON());
     client.commands.set(cmdFile.name, cmdFile);
 }
@@ -73,7 +73,7 @@ for (const event of events) {
 console.log('Listening for all events now!');
 
 // Logging into the bot
-client.login(config.token);
+client.login(config.BOT_TOKEN);
 
 // Express API Setup
 const app = express();
@@ -81,6 +81,22 @@ const PORT = 3000;
 
 // Middleware
 app.use(bodyParser.json());
+
+app.post('/update-config', (req, res) => {
+	const config = req.body;
+  
+	const configPath = path.join(__dirname, 'config', 'config.json');
+  
+	fs.writeFile(configPath, JSON.stringify(config, null, 2), (err) => {
+	  if (err) {
+		console.error('Error writing config:', err);
+		return res.status(500).send('Failed to write config');
+	  }
+  
+	  console.log('Config updated and written to file.');
+	  res.sendStatus(200);
+	});
+  });
 
 // API Endpoint to Send a Message
 app.post('/send-message', async (req, res) => {
