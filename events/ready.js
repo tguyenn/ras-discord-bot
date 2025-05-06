@@ -21,7 +21,7 @@ module.exports = (client, config) => {
         console.log(`${client.user.username} is ready to use!`)
         const rest = new REST({
             version: '9'
-        }).setBOT_TOKEN(config.BOT_TOKEN);
+        }).setToken(config.BOT_TOKEN);
 
         try {
             console.log(client.slashCommands, config.PRODUCTION);
