@@ -4,6 +4,8 @@ const express = require('express'); // Import Express
 const bodyParser = require('body-parser'); // Import Body Parser for JSON parsing
 const config = require('./config/config.json');
 const axios = require('axios');
+const fs = require('fs');
+const path = require('path');
 
 // Discord client
 var intents = [
@@ -96,7 +98,7 @@ app.post('/update-config', (req, res) => {
 	  console.log('Config updated and written to file.');
 	  res.sendStatus(200);
 	});
-  });
+});
 
 // API Endpoint to Send a Message
 app.post('/send-message', async (req, res) => {
