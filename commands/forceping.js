@@ -47,16 +47,16 @@ module.exports = (client, config) => {
                 let annieCount = 0;
                 let colinCount = 0;
 
-                const annieTag = "365619835939455005";
-                const colinTag = "533956992272695297";
+                const config.DISC_AMZ_ORDER_TAG = "365619835939455005";
+                const config.DISC_NON_AMZ_ORDER_TAG = "533956992272695297";
 
                 botMessages.forEach(message => {
-                    if ((message.embeds.length > 0) && message.content.includes(annieTag)) {
+                    if ((message.embeds.length > 0) && message.content.includes(config.DISC_AMZ_ORDER_TAG)) {
                         annieCount++;
                         annieUnprocArr.push(message.embeds[0].footer?.text);
                     }
 
-                    if ((message.embeds.length > 0) && message.content.includes(colinTag)) {
+                    if ((message.embeds.length > 0) && message.content.includes(config.DISC_NON_AMZ_ORDER_TAG)) {
                         colinCount++;
                         colinUnprocArr.push(message.embeds[0].footer?.text);
                     }
@@ -76,7 +76,7 @@ module.exports = (client, config) => {
                 }
 
                 if (annieCount > 0) {
-                    let messageContent = `<@${annieTag}>, you have ${annieCount} unprocessed items:\n\n`;
+                    let messageContent = `<@${config.DISC_AMZ_ORDER_TAG}>, you have ${annieCount} unprocessed items:\n\n`;
                     annieUnprocArr.forEach((item, index) => {
                         messageContent += `${index + 1}. ${item}\n`;
                     });
@@ -84,7 +84,7 @@ module.exports = (client, config) => {
                 }
 
                 if (colinCount > 0) {
-                    let messageContent = `<@${colinTag}>, you have ${colinCount} unprocessed items:\n\n`;
+                    let messageContent = `<@${config.DISC_NON_AMZ_ORDER_TAG}>, you have ${colinCount} unprocessed items:\n\n`;
                     colinUnprocArr.forEach((item, index) => {
                         messageContent += `${index + 1}. ${item}\n`;
                     });

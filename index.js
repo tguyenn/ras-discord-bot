@@ -84,6 +84,8 @@ const PORT = 3000;
 // Middleware
 app.use(bodyParser.json());
 
+
+// API Endpoint to update file at config/config.json
 app.post('/update-config', (req, res) => {
 	const config = req.body;
   
@@ -118,8 +120,7 @@ app.post('/send-message', async (req, res) => {
 
     try {
         // Fetch the API_channel
-        let API_channelId = "1365928612569677944"; // 1365928612569677944 = orders
-	// 882012752426725396 = mod-commands
+        let API_channelId = config.ORDERS_CH_ID;
         const API_channel = await client.channels.fetch(API_channelId);
         if (!API_channel) {
             return res.status(404).send({ error: 'API_Channel not found.' });
@@ -138,7 +139,7 @@ app.post('/send-message', async (req, res) => {
             .addComponents(
                 new Discord.MessageButton()
                     .setCustomId('delete_button')
-                    .setLabel('Explode 💣💥')
+                    .setLabel(config.DISC_CONFIRM_BTN_MSG)
                     .setStyle('DANGER')
             );
         messagePayload.components = [row];
@@ -179,11 +180,8 @@ client.on('interactionCreate', async (interaction) => {
             if (interaction.customId === 'help_previous') {
                 await interaction.reply({ content: 'You clicked the Previous button!' });
             } else if (interaction.customId === 'delete_button') {
-                const annieTag = "365619835939455005";
-                const colinTag = "533956992272695297";
-                const tobyTag = "339824792092016640";
 
-                if ((interaction.user.id === annieTag) || (interaction.user.id === colinTag) || (interaction.user.id === tobyTag)) {
+                if ((interaction.user.id === config.DISC_AMZ_ORDER_TAG) || (interaction.user.id === config.DISC_NON_AMZ_ORDER_TAG) || (interaction.user.id === config.DISC_DEBUG_TAG)) {
                     console.log(`Interaction triggered by the specific user: ${interaction.user.tag}`);
                 } else {
                     console.log(`Interaction triggered by another user: ${interaction.user.tag}`);
@@ -208,7 +206,7 @@ client.on('interactionCreate', async (interaction) => {
                     });
                 }
 
-                const processed_channel_ID = "1362603477569769502"; // 1362603477569769502 = processed-orders
+                const processed_channel_ID = config.PROCESSED_CH_ID; // processed-orders
                 const processed_channel = await client.channels.fetch(processed_channel_ID);
                 console.log(`Fetching channel with ID: ${processed_channel_ID}`);
                 if (!processed_channel) {
@@ -237,7 +235,7 @@ client.on('interactionCreate', async (interaction) => {
 					console.error('Error sending data to Google Sheet:', error);
 				}
 
-                // await interaction.reply({ content: `<a:explode:1368191527028785172> <a:explode:1368191527028785172> <a:explode:1368191527028785172> 'd order with tag: ${tag}`, ephemeral: true });
+                interaction.reply({ content: config.DISC_CONFIRM_REPLY_MSG, ephemeral: true });
                 await interaction.message.delete();
             }
         }
@@ -252,7 +250,7 @@ client.on('interactionCreate', async (interaction) => {
 
 // Function to read messages at 10 PM every day
 async function readMessagesTime() {
-    const targetChannelId = "1212829382419157003"; // Replace with the ID of the channel to read messages from
+    const targetChannelId = config.ORDERS_CH_ID; // Replace with the ID of the channel to read messages from
 
     // Check the time every minute
     setInterval(async () => {
@@ -282,47 +280,44 @@ async function readMessagesTime() {
                 const messages = await channel.messages.fetch({ limit: 50 });
                 const botMessages = messages.filter(message => message.author.id === client.user.id).slice(0, 20);
                 
-                let annieUnprocArr = [];
-                let colinUnprocArr = [];
-                let annieCount = 0;
-                let colinCount = 0;
-
-                const annieTag = "365619835939455005";
-                const colinTag = "533956992272695297";
+                let unprocAmazonArr = [];
+                let unprocNonAmazonArr = [];
+                let amazonCount = 0;
+                let nonAmazonCount = 0;
 
                 botMessages.forEach(message => {
 
-                    if((message.embeds.length > 0) && message.content.includes(annieTag)) {
-                        annieCount++;
-                        annieUnprocArr.push(message.embeds[0].footer?.text);
+                    if((message.embeds.length > 0) && message.content.includes(config.DISC_AMZ_ORDER_TAG)) {
+                        amazonCount++;
+                        unprocAmazonArr.push(message.embeds[0].footer?.text);
                     }
                         
-                    if((message.embeds.length > 0) && message.content.includes(colinTag)) {
-                        colinCount++;
-                        colinUnprocArr.push(message.embeds[0].footer?.text);
+                    if((message.embeds.length > 0) && message.content.includes(config.DISC_NON_AMZ_ORDER_TAG)) {
+                        nonAmazonCount++;
+                        unprocNonAmazonArr.push(message.embeds[0].footer?.text);
                     }
 
                     console.log(`[${message.author.tag}]: ${message.content}`);
                 });
-                console.log(`Annie: ${annieCount}, Colin: ${colinCount}`);
+                console.log(`Amazon: ${amazonCount}, Non-Amazon: ${nonAmazonCount}`);
 
                 // print shame in order-discussion channel :(
-                let discuss_channel_id = "1229492853739225088";
+                let discuss_channel_id = config.DISCUSSION_CH_ID;
                 const discuss_channel = await client.channels.fetch(discuss_channel_id);
                 if (!discuss_channel) {
                     return res.status(404).send({ error: 'discuss_channel_id not found.' });
                 }
                 console.log(`Fetching discussion discord channel with ID: ${discuss_channel_id}`);
-                if(annieCount > 0) {
-                    let messageContent = `<@${annieTag}>, you have ${annieCount} unprocessed items:\n\n`;
-                    annieUnprocArr.forEach((item, index) => {
+                if(amazonCount > 0) {
+                    let messageContent = `<@${config.DISC_AMZ_ORDER_TAG}>, you have ${amazonCount} unprocessed items:\n\n`;
+                    unprocAmazonArr.forEach((item, index) => {
                         messageContent += `${index + 1}. ${item}\n`;
                     });
                     await discuss_channel.send(messageContent);
                 }
-                if(colinCount > 0) {
-                    let messageContent = `<@${colinTag}>, you have ${colinCount} unprocessed items:\n\n`;
-                    colinUnprocArr.forEach((item, index) => {
+                if(nonAmazonCount > 0) {
+                    let messageContent = `<@${config.DISC_NON_AMZ_ORDER_TAG}>, you have ${nonAmazonCount} unprocessed items:\n\n`;
+                    unprocNonAmazonArr.forEach((item, index) => {
                         messageContent += `${index + 1}. ${item}\n`;
                     });
                     await discuss_channel.send(messageContent);
