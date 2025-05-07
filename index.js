@@ -235,7 +235,7 @@ client.on('interactionCreate', async (interaction) => {
 					console.error('Error sending data to Google Sheet:', error);
 				}
 
-                interaction.reply({ content: config.DISC_CONFIRM_REPLY_MSG, ephemeral: true });
+                interaction.reply({ content: `${config.DISC_CONFIRM_REPLY_MSG} - tag ${tag})`, ephemeral: true });
                 await interaction.message.delete();
             }
         }
