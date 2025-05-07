@@ -5,6 +5,7 @@ const bodyParser = require('body-parser'); // Import Body Parser for JSON parsin
 const config = require('./config/config.json');
 const axios = require('axios');
 const fs = require('fs');
+const pm2 = require('pm2'); // Import PM2
 const path = require('path');
 
 // Discord client
@@ -85,21 +86,41 @@ const PORT = 3000;
 app.use(bodyParser.json());
 
 
+
 // API Endpoint to update file at config/config.json
 app.post('/update-config', (req, res) => {
-	const config = req.body;
-  
-	const configPath = path.join(__dirname, 'config', 'config.json');
-  
-	fs.writeFile(configPath, JSON.stringify(config, null, 2), (err) => {
-	  if (err) {
-		console.error('Error writing config:', err);
-		return res.status(500).send('Failed to write config');
-	  }
-  
-	  console.log('Config updated and written to file.');
-	  res.sendStatus(200);
-	});
+    const newConfig = req.body;
+
+    const configPath = path.join(__dirname, 'config', 'config.json');
+
+    // Write the new configuration to the file
+    fs.writeFile(configPath, JSON.stringify(newConfig, null, 2), (err) => {
+        if (err) {
+            console.error('Error writing config:', err);
+            return res.status(500).send('Failed to write config');
+        }
+
+        console.log('Config updated and written to file.');
+
+        // Restart the bot using PM2
+        pm2.connect((err) => {
+            if (err) {
+                console.error('Error connecting to PM2:', err);
+                return res.status(500).send('Failed to restart bot');
+            }
+
+            pm2.restart('ras-discord-bot', (err) => { // Replace 'ras-discord-bot' with your PM2 process name
+                pm2.disconnect(); // Disconnect from PM2
+                if (err) {
+                    console.error('Error restarting bot:', err);
+                    return res.status(500).send('Failed to restart bot');
+                }
+
+                console.log('Bot restarted successfully via PM2.');
+                res.status(200).send('Config updated and bot restarted successfully!');
+            });
+        });
+    });
 });
 
 // API Endpoint to Send a Message
