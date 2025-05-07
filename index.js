@@ -234,7 +234,7 @@ client.on('interactionCreate', async (interaction) => {
 				const scriptURL = "https://script.google.com/macros/s/AKfycbyhxaNOacfgVzIkQDE8rUgzr6wEyYG-AzCt_DqcLRpTVY88478Y93uxJBQcHxNomPPm/exec";
 				const numItems = interaction.message.embeds[0].title.split(' ')[0]; // grab number of items to process	
                 const tag = interaction.message.embeds[numEmbeds-1].footer?.text; // grab tag from last embed
-				const committeeName = originalEmbed.fields[0].value;
+				const committeeName = interaction.message.embeds[0].fields[0].value;
 				const data = { numItems: `${numItems}`, tag: `${tag}`, committeeName: `${committeeName}`};
 				console.log(`sending numitems: ${numItems} tag: ${tag}, committee: ${committeeName}`);
 				axios.post(scriptURL, data);
