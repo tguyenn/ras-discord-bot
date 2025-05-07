@@ -6,6 +6,7 @@ const config = require('./config/config.json');
 const axios = require('axios');
 const fs = require('fs');
 const path = require('path');
+const pm2 = require('pm2');
 
 // Discord client
 var intents = [
@@ -92,13 +93,30 @@ app.post('/update-config', (req, res) => {
 	const configPath = path.join(__dirname, 'config', 'config.json');
   
 	fs.writeFile(configPath, JSON.stringify(config, null, 2), (err) => {
-	  if (err) {
-		console.error('Error writing config:', err);
-		return res.status(500).send('Failed to write config');
-	  }
-  
-	  console.log('Config updated and written to file.');
-	  res.sendStatus(200);
+		if (err) {
+			console.error('Error writing config:', err);
+			return res.status(500).send('Failed to write config');
+		}
+
+		pm2.connect((err) => {
+			if (err) {
+				console.error('Error connecting to PM2:', err);
+				return res.status(500).send('Failed to restart bot');
+			}
+		
+			pm2.restart('discord-bot', (err) => {
+				pm2.disconnect();
+				if (err) {
+					console.error('Error restarting bot:', err);
+					return res.status(500).send('Failed to restart bot');
+				}
+		
+				console.log('Bot restarted successfully via PM2.');
+				res.status(200).send('Config updated and bot restarted successfully!');
+			});
+		});
+		console.log('Config updated and written to file.');
+		res.sendStatus(200);
 	});
 });
 
@@ -253,7 +271,9 @@ async function readMessagesTime() {
     const targetChannelId = config.ORDERS_CH_ID; // Replace with the ID of the channel to read messages from
 
     // Check the time every minute
-    setInterval(async () => {
+    let intervalId = setInterval(async () => {
+
+		try {
         // Get the current time in CDT
         const now = new Date();
         const formatter = new Intl.DateTimeFormat('en-US', {
@@ -327,7 +347,16 @@ async function readMessagesTime() {
                 console.error("Error reading messages:", error);
             }
         }
-    }, 60000); // Check every minute
+		
+		} catch (error) {
+			console.error('Error in readMessagesTime interval:', error);
+		}
+	}, 60000); // Check every minute
+
+	process.on('SIGINT', () => { // clean up so no memory leaks
+		clearInterval(intervalId);
+		process.exit(0);
+	});
 }
 
 // Call the function after the bot is ready
