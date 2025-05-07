@@ -176,6 +176,8 @@ app.listen(PORT, () => {
     console.log(`API server running on http://localhost:${PORT}`);
 });
 
+
+
 // Interaction handling
 client.on('interactionCreate', async (interaction) => {
     try {
@@ -207,22 +209,10 @@ client.on('interactionCreate', async (interaction) => {
                     return;
                 }
 
-                const originalEmbed = interaction.message.embeds[0];
-				const originalContent = interaction.message.content;
-
-                const newEmbed = new Discord.MessageEmbed()
-                    .setTitle(originalEmbed.title || 'No Title')
-                    .setColor(originalEmbed.color || '#ffffff') // Default to white if no color is set
-                    .setFooter(originalEmbed.footer?.text || '', originalEmbed.footer?.iconURL || null)
-                    .setThumbnail(originalEmbed.thumbnail?.url || null)
-                    .setTimestamp(originalEmbed.timestamp || null);
-
-                // Copy fields from the original embed
-                if (originalEmbed.fields) {
-                    originalEmbed.fields.forEach(field => {
-                        newEmbed.addField(field.name, field.value, field.inline);
-                    });
-                }
+				// Clone each embed from the original message
+				const embeds = interaction.message.embeds.map(embed => {
+					return new Discord.MessageEmbed(embed); // Clone the embeds
+				});
 
                 const processed_channel_ID = config.PROCESSED_CH_ID; // processed-orders
                 const processed_channel = await client.channels.fetch(processed_channel_ID);
@@ -232,10 +222,11 @@ client.on('interactionCreate', async (interaction) => {
                     return;
                 }
 
+				let originalContent = interaction.message.content;
 				let strippedContent = originalContent.split(' ').slice(1).join(' '); // remove ping from message before reposting
                 await processed_channel.send({ 
 					content: strippedContent || 'no message content oh no',
-					embeds: [newEmbed] 
+					embeds: embeds 
 				});
 
 				// mark checkboxes in budget sheet
@@ -246,14 +237,9 @@ client.on('interactionCreate', async (interaction) => {
 				const committeeName = originalEmbed.fields[0].value;
 				const data = { numItems: `${numItems}`, tag: `${tag}`, committeeName: `${committeeName}`};
 				console.log(`sending numitems: ${numItems} tag: ${tag}, committee: ${committeeName}`);
-				try {
-					const response = axios.post(scriptURL, data);
-					console.log('Response:', response.data);
-				} catch (error) {
-					console.error('Error sending data to Google Sheet:', error);
-				}
+				axios.post(scriptURL, data);
 
-                interaction.reply({ content: `${config.DISC_CONFIRM_REPLY_MSG} - tag ${tag})`, ephemeral: true });
+                interaction.reply({ content: `${config.DISC_CONFIRM_REPLY_MSG} ${tag}`, ephemeral: true });
                 await interaction.message.delete();
             }
         }
@@ -307,14 +293,14 @@ async function readMessagesTime() {
 
                 botMessages.forEach(message => {
 
-                    if((message.embeds.length > 0) && message.content.includes(config.DISC_AMZ_ORDER_TAG)) {
+					let numEmbeds = message.embeds.length;
+                    if((numEmbeds > 0) && message.content.includes(config.DISC_AMZ_ORDER_TAG)) {
                         amazonCount++;
-                        unprocAmazonArr.push(message.embeds[0].footer?.text);
+                        unprocAmazonArr.push(message.embeds[numEmbeds-1].footer?.text); // push last embed's footer text (tag) into arr
                     }
-                        
-                    if((message.embeds.length > 0) && message.content.includes(config.DISC_NON_AMZ_ORDER_TAG)) {
+                    if((numEmbeds > 0) && message.content.includes(config.DISC_NON_AMZ_ORDER_TAG)) {
                         nonAmazonCount++;
-                        unprocNonAmazonArr.push(message.embeds[0].footer?.text);
+                        unprocNonAmazonArr.push(message.embeds[numEmbeds-1].footer?.text);
                     }
 
                     console.log(`[${message.author.tag}]: ${message.content}`);
