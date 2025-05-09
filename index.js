@@ -273,8 +273,8 @@ async function readMessagesTime() {
             .map(part => parseInt(part.value, 10));
 
         console.log(`[TIME] It is currently ${currentHour}:${currentMinute} CDT`)
-        if (currentHour === 23 && currentMinute === 0) {
-        // if(true) { // test
+        // if (currentHour === 23 && currentMinute === 0) {
+        if(true) { // test
             try {
                 const channel = await client.channels.fetch(targetChannelId);
                 if (!channel) {
@@ -284,7 +284,7 @@ async function readMessagesTime() {
 
                 // Fetch the last 50 messages from the channel
                 const messages = await channel.messages.fetch({ limit: 50 });
-                const botMessages = messages.filter(message => message.author.id === client.user.id).slice(0, 20);
+                const botMessages = [...messages.values()].filter(message => message.author.id === client.user.id).slice(0, 20);
                 
                 let unprocAmazonArr = [];
                 let unprocNonAmazonArr = [];
