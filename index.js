@@ -273,8 +273,8 @@ async function readMessagesTime() {
             .map(part => parseInt(part.value, 10));
 
         console.log(`[TIME] It is currently ${currentHour}:${currentMinute} CDT`)
-        // if (currentHour === 23 && currentMinute === 0) {
-        if(true) { // test
+        if (currentHour === 23 && currentMinute === 0) {
+        // if(true) { // test
             try {
                 const channel = await client.channels.fetch(targetChannelId);
                 if (!channel) {
