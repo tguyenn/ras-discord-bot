@@ -35,7 +35,7 @@ module.exports = (client, config) => {
 
                 // Fetch the last 50 messages from the channel
                 const messages = await channel.messages.fetch({ limit: 50 });
-                const botMessages = messages.filter(message => message.author.id === client.user.id).slice(0, 20);
+                const botMessages = [...messages.values()].filter(message => message.author.id === client.user.id).slice(0, 20);
                 
                 let unprocAmazonArr = [];
                 let unprocNonAmazonArr = [];
