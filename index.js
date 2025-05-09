@@ -223,7 +223,7 @@ client.on('interactionCreate', async (interaction) => {
                 }
 
 				let originalContent = interaction.message.content;
-				let strippedContent = originalContent.split(' ').slice(1).join(' '); // remove ping from message before reposting
+				let strippedContent = originalContent.split('\n').slice(1).join(' '); // remove ping from message before reposting
                 await processed_channel.send({ 
 					content: strippedContent || 'no message content oh no',
 					embeds: embeds 
