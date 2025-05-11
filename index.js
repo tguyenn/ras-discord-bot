@@ -270,8 +270,9 @@ client.on("interactionCreate", async (interaction) => {
                         for (const field of embed.fields) {
                             console.log(`Field Name: ${field.name}`);
                                 let firstWord = field.name.split(" ")[0];
-                                let number = parseInt(firstWord.substring(1)); // removes the first character ("x")
-                                quantities.push(number);
+                                let trimmed = firstWord.replaceAll("_", "");
+                                let stringNum = trimmed.replace("x", "");
+                                quantities.push(parseInt(stringNum));
                             }
                         }
                     }
