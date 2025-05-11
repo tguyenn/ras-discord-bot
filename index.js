@@ -281,7 +281,7 @@ client.on("interactionCreate", async (interaction) => {
                     }
                 }
 
-                await interaction.deferReply({ ephemeral: true }); // need this or else interaction will show as failed
+                await interaction.deferReply({ }); // need this or else interaction will show as failed
 
                 const data = { quantities: quantities, action: "get_amazon_forms"};
                 const response = await axios.post(scriptURL, data, { timeout: 15000 });
@@ -290,13 +290,16 @@ client.on("interactionCreate", async (interaction) => {
                     console.log("Returned array:", eslLinks);
 
                     
-                    console.log(eslLinks.length);
-                    for(i = 0; i < eslLinks.length; i++) {
-                        await interaction.followUp(`[ESL Link ${i + 1}](${eslLinks[i]}) - tag ${tag}`);
-                        await new Promise(res => setTimeout(res, 500)); // 500ms delay
-                    }
+                console.log(eslLinks.length);
+                for (let i = 0; i < eslLinks.length; i++) {
+                    const embed = new Discord.MessageEmbed()
+                        .setTitle(`[ESL Link ${i + 1}](${eslLinks[i]}) - tag ${tag}`)
+                        .setColor(tag); // tag should be a valid color (hex or integer)
+                    await interaction.followUp({ embeds: [embed] });
+                    await new Promise(res => setTimeout(res, 500)); // 500ms delay
+                }
 
-                    await interaction.reply({ content: "wowowow it worked yay" });
+                await interaction.reply({ content: "wowowow it worked yay" });
                     
                     
                 }
