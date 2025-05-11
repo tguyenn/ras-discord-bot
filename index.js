@@ -280,7 +280,7 @@ client.on("interactionCreate", async (interaction) => {
                 }
                 const data = { quantities: quantities, action: "get_amazon_forms"};
                 const response = await axios.post(scriptURL, data);
-                if (response.eslLinks && response.data.success) {
+                if (response.data && response.success) {
                     const eslLinks = response.data.eslLinks; 
                     console.log("Returned array:", eslLinks);
 
@@ -299,7 +299,7 @@ client.on("interactionCreate", async (interaction) => {
                 }
                 else {
                     console.error("API call failed or returned no data.");
-                    console.log("response: " + response);
+                    console.log(JSON.stringify(response.data, null, 2));
 
                 }
 
