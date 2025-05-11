@@ -260,11 +260,11 @@ client.on("interactionCreate", async (interaction) => {
                     return;
                 }
 
-            const scriptURL = config.SCRIPT_API_URL;
-            quantities = [];
+                const scriptURL = config.SCRIPT_API_URL;
+                quantities = [];
 
-            // get all item quantities from order message
-            const embeds = interaction.message.embeds;
+                // get all item quantities from order message
+                const embeds = interaction.message.embeds;
                 for (const embed of embeds) {
                     if (embed.fields) {
                         for (const field of embed.fields) {
@@ -279,7 +279,7 @@ client.on("interactionCreate", async (interaction) => {
                     }
                 }
                 const data = { quantities: quantities, action: "get_amazon_forms"};
-                const response = await axios.post(scriptURL, data);
+                const response = await axios.post(scriptURL, data, { timeout: 10000 });
                 if (response.data && response.success) {
                     const eslLinks = response.data.eslLinks; 
                     console.log("Returned array:", eslLinks);
