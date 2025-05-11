@@ -289,7 +289,7 @@ client.on("interactionCreate", async (interaction) => {
 
 
                     for(i = 0; i < eslLinks.length; i++) {
-                        await interaction.reply(`[${i}.](${eslLink[i]})`);
+                        await interaction.reply(`[${i}.](${eslLinks[i]})`);
                     }
 
                     await interaction.editReply({ content: "wowowow it worked????" });
