@@ -278,6 +278,9 @@ client.on("interactionCreate", async (interaction) => {
                         console.log("sending quantities: ", quantities);
                     }
                 }
+
+                await interaction.deferReply({ ephemeral: true });
+
                 const data = { quantities: quantities, action: "get_amazon_forms"};
                 const response = await axios.post(scriptURL, data, { timeout: 10000 });
                 if (response.data && response.success) {
@@ -295,6 +298,9 @@ client.on("interactionCreate", async (interaction) => {
                     await interaction.message.edit({
                         content: currentContent + appendedContent
                     });
+
+                    await interaction.editReply({ content: "wowowow it worked????" });
+
 
                 }
                 else {
