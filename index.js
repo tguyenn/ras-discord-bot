@@ -271,8 +271,9 @@ client.on("interactionCreate", async (interaction) => {
                             let firstWord = field.name.split(" ")[0];
                             let trimmed = firstWord.replaceAll("_", "");
                             let stringNum = trimmed.replace("x", "");
-                            if(stringNum == null) continue;
-                            quantities.push(parseInt(stringNum));
+                            let num = parseInt(stringNum)
+                            if(isNaN(num)) continue;
+                            quantities.push(num);
                         }
                         console.log("QUANTITIES: ", quantities);
                     }
