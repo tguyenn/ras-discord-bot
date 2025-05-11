@@ -290,11 +290,15 @@ client.on("interactionCreate", async (interaction) => {
                     console.log("Returned array:", eslLinks);
 
                     
+                let color = tag;
+                color = color.toString(16);
+                color = parseInt(color, 16);
+                if(tag > 0xFFFFFF) color = 0xFFFFFF; // just incase ig
                 console.log(eslLinks.length);
                 for (let i = 0; i < eslLinks.length; i++) {
                     const embed = new Discord.MessageEmbed()
                         .setTitle(`[ESL Link ${i + 1}](${eslLinks[i]}) - tag ${tag}`)
-                        .setColor(`#${tag}`); // tag should be a valid color (hex or integer)
+                        .setColor(`#${color}`); // tag should be a valid color (hex or integer)
                     await interaction.followUp({ embeds: [embed] });
                     await new Promise(res => setTimeout(res, 500)); // 500ms delay
                 }
