@@ -282,8 +282,8 @@ client.on("interactionCreate", async (interaction) => {
                 await interaction.deferReply({ ephemeral: true });
 
                 const data = { quantities: quantities, action: "get_amazon_forms"};
-                const response = await axios.post(scriptURL, data, { timeout: 10000 });
-                if (response.data && response.success) {
+                const response = await axios.post(scriptURL, data, { timeout: 15000 });
+                if (response.success) {
                     const eslLinks = response.data.eslLinks; 
                     console.log("Returned array:", eslLinks);
 
@@ -300,10 +300,11 @@ client.on("interactionCreate", async (interaction) => {
                     });
 
                     await interaction.editReply({ content: "wowowow it worked????" });
-
-
+                    
+                    
                 }
                 else {
+                await interaction.editReply({ content: "fack it broke" });
                     console.error("API call failed or returned no data.");
                     console.log(JSON.stringify(response.data, null, 2));
                 }
