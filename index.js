@@ -287,12 +287,10 @@ client.on("interactionCreate", async (interaction) => {
                     const eslLinks = response.data.data; //lmfao
                     console.log("Returned array:", eslLinks);
 
-                    let currentContent = interaction.message.content || "";
-                    let appendedContent = "\nESL Links:\n" + eslLinks.map((link, i) => `${i + 1}. ${link}`).join("\n");
-                    console.log("appended content", appendedContent);
-                    await interaction.message.edit({
-                        content: currentContent + appendedContent
-                    });
+
+                    for(i = 0; i < eslLinks.length; i++) {
+                        await interaction.reply(`[${i}.](${eslLink[i]})`);
+                    }
 
                     await interaction.editReply({ content: "wowowow it worked????" });
                     
