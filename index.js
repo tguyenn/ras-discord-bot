@@ -290,7 +290,8 @@ client.on("interactionCreate", async (interaction) => {
                     
                     console.log(eslLinks.length);
                     for(i = 0; i < eslLinks.length; i++) {
-                        await interaction.followUp(`[ESL Link ${i}](${eslLinks[i]})`);
+                        await interaction.followUp(`[ESL Link ${i + 1}](${eslLinks[i]})`);
+                        await new Promise(res => setTimeout(res, 500)); // 500ms delay
                     }
 
                     await interaction.editReply({ content: "wowowow it worked????" });
