@@ -260,49 +260,52 @@ client.on("interactionCreate", async (interaction) => {
                     return;
                 }
 
-				const scriptURL = config.SCRIPT_API_URL;
-                quantities = [];
+            const scriptURL = config.SCRIPT_API_URL;
+            quantities = [];
 
-                // get all item quantities from order message
-                const embeds = interaction.message.embeds;
-                  for (const embed of embeds) {
+            // get all item quantities from order message
+            const embeds = interaction.message.embeds;
+                for (const embed of embeds) {
                     if (embed.fields) {
                         for (const field of embed.fields) {
-                            console.log(`Field Name: ${field.name}`);
-                                let firstWord = field.name.split(" ")[0];
-                                let trimmed = firstWord.replaceAll("_", "");
-                                let stringNum = trimmed.replace("x", "");
-                                quantities.push(parseInt(stringNum));
-                            }
+                            let firstWord = field.name.split(" ")[0];
+                            console.log(firstWord);
+                            let trimmed = firstWord.replaceAll("_", "");
+                            console.log(trimmed);
+                            let stringNum = trimmed.replace("x", "");
+                            console.log(strinNum);
+                            quantities.push(parseInt(stringNum));
                         }
+                        console.log("QUANTITIES: ", quantities);
                     }
-                    const data = { quantities: quantities, action: "get_amazon_forms"};
-                    const response = await axios.post(scriptURL, data);
-                    if (response.eslLinks && response.data.success) {
-                        const eslLinks = response.data.eslLinks; 
-                        console.log("Returned array:", eslLinks);
+                }
+                const data = { quantities: quantities, action: "get_amazon_forms"};
+                const response = await axios.post(scriptURL, data);
+                if (response.eslLinks && response.data.success) {
+                    const eslLinks = response.data.eslLinks; 
+                    console.log("Returned array:", eslLinks);
 
-                        let eslLinkContent
-                        eslLinks.forEach(link => {
-                            eslLinkContent.push(link);
-                        });
+                    let eslLinkContent
+                    eslLinks.forEach(link => {
+                        eslLinkContent.push(link);
+                    });
 
-                        let currentContent = interaction.message.content || "";
-                        let appendedContent = "\nESL Links:\n" + eslLinks.map((link, i) => `${i + 1}. ${link}`).join("\n");
-                        console.log(appendedContent);
-                        await interaction.message.edit({
-                            content: currentContent + appendedContent
-                        });
-
-                    }
-                    else {
-                        console.error("API call failed or returned no data.");
-                    }
+                    let currentContent = interaction.message.content || "";
+                    let appendedContent = "\nESL Links:\n" + eslLinks.map((link, i) => `${i + 1}. ${link}`).join("\n");
+                    console.log(appendedContent);
+                    await interaction.message.edit({
+                        content: currentContent + appendedContent
+                    });
 
                 }
-
+                else {
+                    console.error("API call failed or returned no data.");
+                }
 
             }
+
+
+        }
     } catch (error) {
         console.error("Error handling interaction:", error);
         if (interaction.isCommand() && !interaction.replied) {
