@@ -292,11 +292,11 @@ client.on("interactionCreate", async (interaction) => {
                     
                     console.log(eslLinks.length);
                     for(i = 0; i < eslLinks.length; i++) {
-                        await interaction.followUp(`[ESL Link ${i + 1}](${eslLinks[i]}) for tag ${tag}`);
+                        await interaction.followUp(`[ESL Link ${i + 1}](${eslLinks[i]}) - tag ${tag}`);
                         await new Promise(res => setTimeout(res, 500)); // 500ms delay
                     }
 
-                    await interaction.editReply({ content: "wowowow it worked yay" });
+                    await interaction.reply({ content: "wowowow it worked yay" });
                     
                     
                 }
