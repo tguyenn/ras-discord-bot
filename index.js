@@ -260,6 +260,8 @@ client.on("interactionCreate", async (interaction) => {
                     return;
                 }
 
+                const numEmbeds = interaction.message.embeds.length;
+                const tag = interaction.message.embeds[numEmbeds-1].footer?.text; // grab tag from last embed
                 const scriptURL = config.SCRIPT_API_URL;
                 quantities = [];
 
@@ -279,7 +281,7 @@ client.on("interactionCreate", async (interaction) => {
                     }
                 }
 
-                await interaction.deferReply({ ephemeral: true });
+                await interaction.deferReply({ ephemeral: true }); // need this or else interaction will show as failed
 
                 const data = { quantities: quantities, action: "get_amazon_forms"};
                 const response = await axios.post(scriptURL, data, { timeout: 15000 });
@@ -290,11 +292,11 @@ client.on("interactionCreate", async (interaction) => {
                     
                     console.log(eslLinks.length);
                     for(i = 0; i < eslLinks.length; i++) {
-                        await interaction.followUp(`[ESL Link ${i + 1}](${eslLinks[i]})`);
+                        await interaction.followUp(`[ESL Link ${i + 1}](${eslLinks[i]}) for tag ${tag}`);
                         await new Promise(res => setTimeout(res, 500)); // 500ms delay
                     }
 
-                    await interaction.editReply({ content: "wowowow it worked????" });
+                    await interaction.editReply({ content: "wowowow it worked yay" });
                     
                     
                 }
