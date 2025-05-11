@@ -165,7 +165,7 @@ app.post("/send-message", async (req, res) => {
                 new Discord.MessageButton()
                     .setCustomId("fetch_amazon_ESL_forms")
                     .setLabel(config.DISC_AMAZON_BTN_MSG)
-                    .setStyle("DANGER")
+                    .setStyle("PRIMARY")
             );
                 
         }
@@ -269,9 +269,9 @@ client.on("interactionCreate", async (interaction) => {
                     if (embed.fields) {
                         for (const field of embed.fields) {
                             console.log(`Field Name: ${field.name}`);
-                                let firstWord = field.name.split(" ")[0]
-                                let stringNum = firstWord.splice(0, 1); 
-                                quantities.push(parseInt(stringNum));
+                                let firstWord = field.name.split(" ")[0];
+                                let number = parseInt(firstWord.substring(1)); // removes the first character ("x")
+                                quantities.push(number);
                             }
                         }
                     }
