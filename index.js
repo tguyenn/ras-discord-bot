@@ -283,10 +283,8 @@ client.on("interactionCreate", async (interaction) => {
 
                 const data = { quantities: quantities, action: "get_amazon_forms"};
                 const response = await axios.post(scriptURL, data, { timeout: 15000 });
-                console.log(response);
-                console.log(response.success);
-                if (response.success) {
-                    const eslLinks = response.data.eslLinks; 
+                if (response.data.success) {
+                    const eslLinks = response.data.data; //lmfao
                     console.log("Returned array:", eslLinks);
 
                     let eslLinkContent
