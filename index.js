@@ -301,7 +301,6 @@ client.on("interactionCreate", async (interaction) => {
                     console.error("API call failed or returned no data.");
                     console.log(JSON.stringify(response.data, null, 2));
                 }
-                    console.log("akldmlmldnlksdnlkslfkmk" + JSON.stringify(response.data, null, 2));
 
 
             }
