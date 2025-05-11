@@ -269,11 +269,9 @@ client.on("interactionCreate", async (interaction) => {
                     if (embed.fields) {
                         for (const field of embed.fields) {
                             let firstWord = field.name.split(" ")[0];
-                            console.log(firstWord);
                             let trimmed = firstWord.replaceAll("_", "");
-                            console.log(trimmed);
                             let stringNum = trimmed.replace("x", "");
-                            console.log(strinNum);
+                            if(stringNum == null) continue;
                             quantities.push(parseInt(stringNum));
                         }
                         console.log("QUANTITIES: ", quantities);
