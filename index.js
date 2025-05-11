@@ -299,6 +299,8 @@ client.on("interactionCreate", async (interaction) => {
                 }
                 else {
                     console.error("API call failed or returned no data.");
+                    console.log("response: " + response);
+
                 }
 
             }
