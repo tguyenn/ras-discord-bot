@@ -160,7 +160,7 @@ app.post("/send-message", async (req, res) => {
                     .setLabel(config.DISC_CONFIRM_BTN_MSG)
                     .setStyle("DANGER")
             );
-        if(embeds[0].fields[3] == "Amazon") {
+        if(embeds[0].fields[3].value == "Amazon") {
             row.addComponents(
                 new Discord.MessageButton()
                     .setCustomId("fetch_amazon_ESL_forms")
