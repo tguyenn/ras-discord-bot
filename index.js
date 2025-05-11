@@ -160,6 +160,15 @@ app.post("/send-message", async (req, res) => {
                     .setLabel(config.DISC_CONFIRM_BTN_MSG)
                     .setStyle("DANGER")
             );
+        if(embeds[0].fields[3] == "Amazon") {
+            row.addComponents(
+                new Discord.MessageButton()
+                    .setCustomId("fetch_amazon_ESL_forms")
+                    .setLabel(config.DISC_AMAZON_BTN_MSG)
+                    .setStyle("DANGER")
+            );
+                
+        }
         messagePayload.components = [row];
 
         // Send the message
@@ -231,21 +240,68 @@ client.on("interactionCreate", async (interaction) => {
 
 				// mark checkboxes in budget sheet
 				const numEmbeds = interaction.message.embeds.length;
-				const scriptURL = "https://script.google.com/macros/s/AKfycbyhxaNOacfgVzIkQDE8rUgzr6wEyYG-AzCt_DqcLRpTVY88478Y93uxJBQcHxNomPPm/exec";
+				const scriptURL = config.SCRIPT_API_URL;
 				const numItems = interaction.message.embeds[0].title.split(" ")[0]; // grab number of items to process	
                 const tag = interaction.message.embeds[numEmbeds-1].footer?.text; // grab tag from last embed
 				const committeeName = interaction.message.embeds[0].fields[0].value;
-				const data = { numItems: `${numItems}`, tag: `${tag}`, committeeName: `${committeeName}`};
-				console.log(`sending numitems: ${numItems} tag: ${tag}, committee: ${committeeName}`);
+				const data = { numItems: `${numItems}`, tag: `${tag}`, committeeName: `${committeeName}` , action: "mark_checks"};
+				console.log(`sending numitems: ${numItems} tag: ${tag}, committee: ${committeeName}, action: mark_checks`);
 				axios.post(scriptURL, data);
 
                 interaction.reply({ content: `${config.DISC_CONFIRM_REPLY_MSG} ${tag}`, ephemeral: true });
                 await interaction.message.delete();
             }
-            else if(interaction.customId == "") {
-                
+            else if(interaction.customId == "fetch_amazon_ESL_forms") {
+                if ((interaction.user.id === config.DISC_AMZ_ORDER_TAG) || (interaction.user.id === config.DISC_DEBUG_TAG)) {
+                    console.log(`Interaction triggered by the specific user: ${interaction.user.tag}`);
+                } else {
+                    console.log(`Interaction triggered by another user: ${interaction.user.tag}`);
+                    await interaction.reply({ content: `<@${interaction.user.id}> not authorized to trigger Amazon search 😔`, ephemeral: true });
+                    return;
+                }
+
+				const scriptURL = config.SCRIPT_API_URL;
+                quantities = [];
+
+                // get all item quantities from order message
+                const embeds = interaction.message.embeds;
+                  for (const embed of embeds) {
+                    if (embed.fields) {
+                        for (const field of embed.fields) {
+                            console.log(`Field Name: ${field.name}`);
+                                let firstWord = field.name.split(" ")[0]
+                                let stringNum = firstWord.splice(0, 1); 
+                                quantities.push(parseInt(stringNum));
+                            }
+                        }
+                    }
+                    const data = { quantities: quantities, action: "get_amazon_forms"};
+                    const response = await axios.post(scriptURL, data);
+                    if (response.eslLinks && response.data.success) {
+                        const eslLinks = response.data.eslLinks; 
+                        console.log("Returned array:", eslLinks);
+
+                        let eslLinkContent
+                        eslLinks.forEach(link => {
+                            eslLinkContent.push(link);
+                        });
+
+                        let currentContent = interaction.message.content || "";
+                        let appendedContent = "\nESL Links:\n" + eslLinks.map((link, i) => `${i + 1}. ${link}`).join("\n");
+                        console.log(appendedContent);
+                        await interaction.message.edit({
+                            content: currentContent + appendedContent
+                        });
+
+                    }
+                    else {
+                        console.error("API call failed or returned no data.");
+                    }
+
+                }
+
+
             }
-        }
     } catch (error) {
         console.error("Error handling interaction:", error);
         if (interaction.isCommand() && !interaction.replied) {
