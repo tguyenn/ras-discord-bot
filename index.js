@@ -299,7 +299,7 @@ client.on("interactionCreate", async (interaction) => {
                     const embed = new Discord.MessageEmbed()
                         .setDescription(`[ESL Link ${i + 1}](${eslLinks[i]}) - tag ${tag}`)
                         .setColor(color); // tag should be a valid color (hex or integer)
-                    await interaction.followUp({ embeds: [embed] });
+                    await interaction.followUp({ embeds: [embed], ephemeral: true});
                     await new Promise(res => setTimeout(res, 500)); // 500ms delay to avoid ratelimiting
                 }
 
