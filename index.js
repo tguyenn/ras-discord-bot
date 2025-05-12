@@ -308,7 +308,7 @@ client.on("interactionCreate", async (interaction) => {
                     
                 }
                 else {
-                    await interaction.editReply({ content: "fack it broke" });
+                    await interaction.editReply({ content: response.data.message || "fack it broke" });
                     console.error("API call failed or returned no data.");
                     console.log(JSON.stringify(response.data, null, 2));
                 }
