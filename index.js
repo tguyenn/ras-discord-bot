@@ -281,7 +281,7 @@ client.on("interactionCreate", async (interaction) => {
                     }
                 }
 
-                await interaction.deferReply({content: "Waiting for GAS to finish..." }); // need this or else interaction will show as failed
+                await interaction.deferReply({content: "Waiting for GAS to finish...", ephemeral: true }); // need this or else interaction will show as failed
 
                 const data = { quantities: quantities, action: "get_amazon_forms"};
                 const response = await axios.post(scriptURL, data, { timeout: 15000 });
@@ -303,7 +303,7 @@ client.on("interactionCreate", async (interaction) => {
                     await new Promise(res => setTimeout(res, 500)); // 500ms delay to avoid ratelimiting
                 }
 
-                await interaction.editReply({ content: "Finished Fetching👍" });
+                await interaction.editReply({ content: "Finished Fetching👍"});
                     
                     
                 }
