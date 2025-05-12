@@ -293,6 +293,7 @@ client.on("interactionCreate", async (interaction) => {
                 let color = tag;
                 color = color.toString(16);
                 color = parseInt(color, 16);
+                console.log("color: " + color);
                 if(tag > 0xFFFFFF) color = 0xFFFFFF; // just incase ig
                 console.log(eslLinks.length);
                 for (let i = 0; i < eslLinks.length; i++) {
