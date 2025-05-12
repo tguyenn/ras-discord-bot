@@ -297,10 +297,10 @@ client.on("interactionCreate", async (interaction) => {
                 console.log(eslLinks.length);
                 for (let i = 0; i < eslLinks.length; i++) {
                     const embed = new Discord.MessageEmbed()
-                        .setTitle(`[ESL Link ${i + 1}](${eslLinks[i]}) - tag ${tag}`)
+                        .setDescription(`[ESL Link ${i + 1}](${eslLinks[i]}) - tag ${tag}`)
                         .setColor(color); // tag should be a valid color (hex or integer)
                     await interaction.followUp({ embeds: [embed] });
-                    await new Promise(res => setTimeout(res, 500)); // 500ms delay
+                    await new Promise(res => setTimeout(res, 500)); // 500ms delay to avoid ratelimiting
                 }
 
                 await interaction.editReply({ content: "Finished Fetching👍" });
