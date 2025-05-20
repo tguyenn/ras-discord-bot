@@ -1,6 +1,6 @@
 // Imports
-const fs = require('fs');
-const path = require('path');
+const fs = require("fs");
+const path = require("path");
 
 /**
  * Get locations of all files inside a directory. It searches through all subdirectories too.
@@ -14,9 +14,24 @@ function getFileLocations(dirPath, extname) {
 
     arrayOfFiles = [];
 
-    files.forEach(file => {
-        if (fs.statSync(`${dirPath}/${file}`).isDirectory()) arrayOfFiles = [...arrayOfFiles, ...getFileLocations(`${dirPath}/${file}`, extname)]; 
-        else if ((((extname != null) && ((Array.isArray(extname) && ((extname.includes(path.extname(file)) || (extname.filter((el) => {return (/^\s*$/.test(String(el))) == false}).length == 0))))) || (path.extname(file) == extname))) || (extname == null || /^\s*$/.test(String(extname)))) arrayOfFiles.push(`${dirPath}/${file}`);
+    files.forEach((file) => {
+        if (fs.statSync(`${dirPath}/${file}`).isDirectory())
+            arrayOfFiles = [
+                ...arrayOfFiles,
+                ...getFileLocations(`${dirPath}/${file}`, extname),
+            ];
+        else if (
+            (extname != null &&
+                Array.isArray(extname) &&
+                (extname.includes(path.extname(file)) ||
+                    extname.filter((el) => {
+                        return /^\s*$/.test(String(el)) == false;
+                    }).length == 0)) ||
+            path.extname(file) == extname ||
+            extname == null ||
+            /^\s*$/.test(String(extname))
+        )
+            arrayOfFiles.push(`${dirPath}/${file}`);
     });
 
     return arrayOfFiles;

@@ -1,12 +1,12 @@
 // Imports
-const Discord = require('discord.js');
-const hasPermission = require('./../utils/hasPermission');
+const Discord = require("discord.js");
+const hasPermission = require("./../utils/hasPermission");
 
 module.exports = (client, config) => {
     var eventObj = {};
 
     // Settings
-    eventObj.name = 'messageCreate'; // Event name
+    eventObj.name = "messageCreate"; // Event name
     eventObj.once = false; // Set this to true if it should listen once.
 
     // Main function
@@ -18,17 +18,25 @@ module.exports = (client, config) => {
         if (!message.content.startsWith(config.PREFIX)) {
             return;
         }
-        const args = message.content.slice(config.PREFIX.length).trim().split(/ +/);
+        const args = message.content
+            .slice(config.PREFIX.length)
+            .trim()
+            .split(/ +/);
         const commandName = args.shift().toLowerCase();
         const command = client.commands.get(commandName);
 
         if (!command) return;
-        if (command.permissions == null || (command.permissions != null && hasPermission(message.member, command.permissions))) try {
-            await command.execute(message, args, null);
-        } catch (err) {
-            if (err) console.error(err);
-        }
-    }
+        if (
+            command.permissions == null ||
+            (command.permissions != null &&
+                hasPermission(message.member, command.permissions))
+        )
+            try {
+                await command.execute(message, args, null);
+            } catch (err) {
+                if (err) console.error(err);
+            }
+    };
 
     return eventObj;
-}
+};

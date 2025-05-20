@@ -1,14 +1,14 @@
 // Imports
-const Discord = require('discord.js');
-const { SlashCommandBuilder } = require('@discordjs/builders');
+const Discord = require("discord.js");
+const { SlashCommandBuilder } = require("@discordjs/builders");
 
 module.exports = (client, config) => {
     var cmdObj = {};
 
     // Settings
-    cmdObj.name = 'help'; // The name of the command 
-    cmdObj.description = 'tired of guessing? get help now!'; // A short description of what the command does
-    cmdObj.category = 'Helpful Commands'; // Which category the command belongs to
+    cmdObj.name = "help"; // The name of the command
+    cmdObj.description = "tired of guessing? get help now!"; // A short description of what the command does
+    cmdObj.category = "Helpful Commands"; // Which category the command belongs to
     cmdObj.permissions = null;
     cmdObj.data = new SlashCommandBuilder()
         .setName(cmdObj.name)
@@ -23,19 +23,27 @@ module.exports = (client, config) => {
     cmdObj.execute = (message, args, interaction) => {
         // Creates the base of our embed message
         const embed = new Discord.MessageEmbed()
-            .setTitle('Help Menu!')
-            .setColor('#FF6700');
-        
+            .setTitle("Help Menu!")
+            .setColor("#FF6700");
+
         // Add current PREFIX section if PREFIX is set
         if (config.PREFIX !== "") {
-            embed.addField('Current PREFIX', `The current PREFIX is: \`${config.PREFIX}\``, false);
+            embed.addField(
+                "Current PREFIX",
+                `The current PREFIX is: \`${config.PREFIX}\``,
+                false
+            );
         }
-        
+
         // Looping through the collected categories to setup the help menu
-        for (const [category, cmds] of Object.entries(client.commandCategories)) {
+        for (const [category, cmds] of Object.entries(
+            client.commandCategories
+        )) {
             let cmdStr = ``;
             for (var i = 0; i < cmds.length; i++) {
-                cmdStr += `\`${cmds[i].name}\`: ${cmds[i].description}${i == (cmds.length - 1) ? '' : '\r\n'}`;
+                cmdStr += `\`${cmds[i].name}\`: ${cmds[i].description}${
+                    i == cmds.length - 1 ? "" : "\r\n"
+                }`;
             }
 
             // Adds the category with the commands to embed message
@@ -43,32 +51,31 @@ module.exports = (client, config) => {
         }
 
         // Create buttons
-        const row = new Discord.MessageActionRow()
-            .addComponents(
-                new Discord.MessageButton()
-                    .setCustomId('help_previous')
-                    .setLabel('Previous')
-                    .setStyle('PRIMARY'),
-                new Discord.MessageButton()
-                    .setCustomId('help_next')
-                    .setLabel('Next')
-                    .setStyle('PRIMARY'),
-                new Discord.MessageButton()
-                    .setLabel('Visit Website')
-                    .setStyle('LINK')
-                    .setURL('https://example.com') // Replace with your website URL
-            );
+        const row = new Discord.MessageActionRow().addComponents(
+            new Discord.MessageButton()
+                .setCustomId("help_previous")
+                .setLabel("Previous")
+                .setStyle("PRIMARY"),
+            new Discord.MessageButton()
+                .setCustomId("help_next")
+                .setLabel("Next")
+                .setStyle("PRIMARY"),
+            new Discord.MessageButton()
+                .setLabel("Visit Website")
+                .setStyle("LINK")
+                .setURL("https://example.com") // Replace with your website URL
+        );
 
         // Check if the command is executed as a message or slash command
         if (message) {
             // Standard message command
             message.channel.send({ embeds: [embed], components: [row] });
-            console.log('message found!');
+            console.log("message found!");
         } else if (interaction) {
             // Slash command
-            interaction.reply({ embeds: [embed], components: [row]}); // Ephemeral makes the reply visible only to the user
+            interaction.reply({ embeds: [embed], components: [row] }); // Ephemeral makes the reply visible only to the user
         } else {
-            console.error('Neither message nor interaction was provided.');
+            console.error("Neither message nor interaction was provided.");
         }
     };
 
