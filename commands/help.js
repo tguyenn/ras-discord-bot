@@ -77,6 +77,7 @@ module.exports = (client, config) => {
         } else if (interaction) {
             // Slash command
             interaction.reply({ embeds: [embed], components: [row] });
+            console.log("interaction found!");
         } else {
             console.error("Neither message nor interaction was provided.");
         }
