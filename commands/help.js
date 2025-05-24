@@ -1,9 +1,11 @@
 // Imports
-const Discord = require("discord.js");
+
+// Use destructuring to import only what is needed from discord.js
+const { MessageEmbed, MessageActionRow, MessageButton } = require("discord.js");
 const { SlashCommandBuilder } = require("@discordjs/builders");
 
 module.exports = (client, config) => {
-    var cmdObj = {};
+    const cmdObj = {};
 
     // Settings
     cmdObj.name = "help"; // The name of the command
@@ -15,14 +17,15 @@ module.exports = (client, config) => {
         .setDescription(cmdObj.description); // Build properties for a Slash Command here if wanted. If not, set the property to null
 
     // Main function
+
     /**
-     * @param {Discord.Message} message - Will be set if the command was executed by standard message command.
-     * @param {Array<String> || Discord.CommandInteractionOptionResolver} args - If the command was executed by standard message command, it will send an array of string arguments. If executed by slash commands it will return the interaction options.
-     * @param {Discord.CommandInteraction} interaction - Will be set if command was executed by a slash command.
+     * @param {import('discord.js').Message} message - Will be set if the command was executed by standard message command.
+     * @param {Array<String> | import('discord.js').CommandInteractionOptionResolver} args - If the command was executed by standard message command, it will send an array of string arguments. If executed by slash commands it will return the interaction options.
+     * @param {import('discord.js').CommandInteraction} interaction - Will be set if command was executed by a slash command.
      */
     cmdObj.execute = (message, args, interaction) => {
         // Creates the base of our embed message
-        const embed = new Discord.MessageEmbed()
+        const embed = new MessageEmbed()
             .setTitle("Help Menu!")
             .setColor("#FF6700");
 
@@ -51,16 +54,16 @@ module.exports = (client, config) => {
         }
 
         // Create buttons
-        const row = new Discord.MessageActionRow().addComponents(
-            new Discord.MessageButton()
+        const row = new MessageActionRow().addComponents(
+            new MessageButton()
                 .setCustomId("help_previous")
                 .setLabel("Previous")
                 .setStyle("PRIMARY"),
-            new Discord.MessageButton()
+            new MessageButton()
                 .setCustomId("help_next")
                 .setLabel("Next")
                 .setStyle("PRIMARY"),
-            new Discord.MessageButton()
+            new MessageButton()
                 .setLabel("Visit Website")
                 .setStyle("LINK")
                 .setURL("https://example.com") // Replace with your website URL
@@ -73,7 +76,7 @@ module.exports = (client, config) => {
             console.log("message found!");
         } else if (interaction) {
             // Slash command
-            interaction.reply({ embeds: [embed], components: [row] }); // Ephemeral makes the reply visible only to the user
+            interaction.reply({ embeds: [embed], components: [row] });
         } else {
             console.error("Neither message nor interaction was provided.");
         }

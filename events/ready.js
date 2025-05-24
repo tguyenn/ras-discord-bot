@@ -30,7 +30,7 @@ module.exports = (client, config) => {
                     body: client.slashCommands,
                 });
                 console.log(
-                    "Successfully registered exisiting slash commands globally."
+                    "Successfully registered existing slash commands globally."
                 );
             } else {
                 await rest.put(
@@ -43,7 +43,7 @@ module.exports = (client, config) => {
                     }
                 );
                 console.log(
-                    `Successfully registered exisiting slash commands in guild with id: ${config.GUILD_ID}.`
+                    `Successfully registered existing slash commands in guild with id: ${config.GUILD_ID}.`
                 );
             }
         } catch (err) {
