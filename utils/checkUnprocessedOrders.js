@@ -74,12 +74,12 @@ async function checkUnprocessedOrders(
                 unprocAmazonArr,
                 unprocNonAmazonArr
             );
-        }        // If this is from an interaction, respond with a summary
+        } // If this is from an interaction, respond with a summary
         if (interaction) {
             const responseContent = `Found ${amazonCount} unprocessed Amazon orders and ${nonAmazonCount} unprocessed non-Amazon orders.${
                 notifyChannel ? " Notifications sent." : ""
             }`;
-            
+
             // Handle different interaction states
             if (interaction.deferred) {
                 await interaction.editReply({ content: responseContent });
@@ -96,12 +96,13 @@ async function checkUnprocessedOrders(
             nonAmazonCount,
             amazonItems: unprocAmazonArr,
             nonAmazonItems: unprocNonAmazonArr,
-        };    } catch (error) {
+        };
+    } catch (error) {
         console.error("Error checking unprocessed orders:", error);
-        
+
         if (interaction) {
             const errorMessage = "❌ Error checking unprocessed orders.";
-            
+
             if (interaction.deferred) {
                 await interaction.editReply({ content: errorMessage });
             } else if (!interaction.replied) {
@@ -111,7 +112,7 @@ async function checkUnprocessedOrders(
                 });
             }
         }
-        
+
         return {
             amazonCount: 0,
             nonAmazonCount: 0,

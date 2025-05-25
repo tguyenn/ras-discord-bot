@@ -9,7 +9,7 @@ module.exports = (client, config) => {
 
     // Settings
     cmdObj.name = "help"; // The name of the command
-    cmdObj.description = "tired of guessing? get help now!"; // A short description of what the command does
+    cmdObj.description = "Tired of guessing? get help now!"; // A short description of what the command does
     cmdObj.category = "Helpful Commands"; // Which category the command belongs to
     cmdObj.permissions = null;
     cmdObj.data = new SlashCommandBuilder()
@@ -33,7 +33,7 @@ module.exports = (client, config) => {
         if (config.PREFIX !== "") {
             embed.addField(
                 "Current PREFIX",
-                `The current PREFIX is: \`${config.PREFIX}\``,
+                `The current PREFIX is: \`${config.BOT_PREFIX}\``,
                 false
             );
         }
