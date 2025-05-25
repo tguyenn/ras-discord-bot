@@ -74,16 +74,21 @@ async function checkUnprocessedOrders(
                 unprocAmazonArr,
                 unprocNonAmazonArr
             );
-        }
-
-        // If this is from an interaction, reply with a summary
+        }        // If this is from an interaction, respond with a summary
         if (interaction) {
-            await interaction.reply({
-                content: `Found ${amazonCount} unprocessed Amazon orders and ${nonAmazonCount} unprocessed non-Amazon orders.${
-                    notifyChannel ? " Notifications sent." : ""
-                }`,
-                ephemeral: true,
-            });
+            const responseContent = `Found ${amazonCount} unprocessed Amazon orders and ${nonAmazonCount} unprocessed non-Amazon orders.${
+                notifyChannel ? " Notifications sent." : ""
+            }`;
+            
+            // Handle different interaction states
+            if (interaction.deferred) {
+                await interaction.editReply({ content: responseContent });
+            } else if (!interaction.replied) {
+                await interaction.reply({
+                    content: responseContent,
+                    ephemeral: true,
+                });
+            }
         }
 
         return {
@@ -91,14 +96,22 @@ async function checkUnprocessedOrders(
             nonAmazonCount,
             amazonItems: unprocAmazonArr,
             nonAmazonItems: unprocNonAmazonArr,
-        };
-    } catch (error) {
+        };    } catch (error) {
         console.error("Error checking unprocessed orders:", error);
-        if (interaction)
-            await interaction.reply({
-                content: "❌ Error checking unprocessed orders.",
-                ephemeral: true,
-            });
+        
+        if (interaction) {
+            const errorMessage = "❌ Error checking unprocessed orders.";
+            
+            if (interaction.deferred) {
+                await interaction.editReply({ content: errorMessage });
+            } else if (!interaction.replied) {
+                await interaction.reply({
+                    content: errorMessage,
+                    ephemeral: true,
+                });
+            }
+        }
+        
         return {
             amazonCount: 0,
             nonAmazonCount: 0,
