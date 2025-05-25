@@ -9,11 +9,8 @@ module.exports = { startBot };
  * @param {Object} axios - Axios HTTP client
  */
 function startBot(client, config, Discord, axios) {
-    // No need to redefine intents or create client here as it's passed from index.js
 
-    // Initialize interaction handlers
-    const handleInteraction = require("./handleInteraction");
-    handleInteraction(client, config, Discord, axios); // Initialize time-based message reading
+    // Initialize time-based message reading
     const readMessagesTime = require("./readTime"); // Command collection
     client.commands = new Discord.Collection();
     client.slashCommands = [];
@@ -107,7 +104,5 @@ function startBot(client, config, Discord, axios) {
         console.log("Bot has been disconnected from Discord!");
     });
 
-    // We don't need to add another ready event here, as it's already handled by events/ready.js
-    // Just set up the readMessagesTime without additional calls to startApi
     readMessagesTime(client, config);
 }

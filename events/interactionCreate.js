@@ -27,7 +27,15 @@ module.exports = (client, config) => {
                 hasPermission(interaction.member, command.permissions))
         )
             try {
-                await command.execute(null, interaction.options, interaction);
+                // Check if the command has already been handled
+                if (!interaction.replied && !interaction.deferred) {
+                    // Call execute with the correct parameter order - for slash commands, message should be null
+                    await command.execute(
+                        null,
+                        interaction.options,
+                        interaction
+                    );
+                }
             } catch (err) {
                 if (err) console.error(err);
             }

@@ -67,17 +67,24 @@ module.exports = (client, config) => {
                 .setLabel("Visit Website")
                 .setStyle("LINK")
                 .setURL("https://example.com") // Replace with your website URL
-        );
-
-        // Check if the command is executed as a message or slash command
+        );        // Check if the command is executed as a message or slash command
         if (message) {
             // Standard message command
             message.channel.send({ embeds: [embed], components: [row] });
-            console.log("message found!");
+            console.log("Message command executed");
         } else if (interaction) {
-            // Slash command
-            interaction.reply({ embeds: [embed], components: [row] });
-            console.log("interaction found!");
+            // Check if this is a CommandInteraction (slash command)
+            if (interaction.isCommand && interaction.isCommand()) {
+                // Only reply if it hasn't been replied to already
+                if (!interaction.replied && !interaction.deferred) {
+                    interaction.reply({ embeds: [embed], components: [row] });
+                    console.log("Slash command executed");
+                }
+            } else {
+                // Handle other interaction types like options
+                interaction.reply({ embeds: [embed], components: [row] });
+                console.log("Other interaction handled");
+            }
         } else {
             console.error("Neither message nor interaction was provided.");
         }

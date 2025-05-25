@@ -1,6 +1,7 @@
 // Imports
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const { CommandInteraction, Client } = require("discord.js");
+const checkUnprocessedOrders = require("../utils/checkUnprocessedOrders");
 
 /**
  * @param {Client} client - The Discord client instance.
@@ -9,10 +10,14 @@ const { CommandInteraction, Client } = require("discord.js");
 module.exports = (client, config) => {
     return {
         name: "forceping",
-        category: "Utility", // Optional: Add a category if needed
+        category: "Utility", 
         data: new SlashCommandBuilder()
             .setName("forceping")
-            .setDescription("Ping bums that haven't placed orders!"),
+            .setDescription("Ping bums that haven't placed orders!")
+            .addBooleanOption(option =>
+                option.setName('notify')
+                .setDescription('Send notifications to the discussion channel')
+                .setRequired(false)),
 
         /**
          * Executes the slash command.
@@ -23,82 +28,12 @@ module.exports = (client, config) => {
                 console.error("Interaction object is null or undefined.");
                 return;
             }
-
-            const targetChannelId = config.ORDERS_CH_ID; // Replace with the ID of the channel to read messages from
-
-            try {
-                const channel = await client.channels.fetch(targetChannelId);
-                if (!channel) {
-                    console.error(
-                        "Target channel not found or is not a text channel."
-                    );
-                    return;
-                }
-
-                // Fetch the last 50 messages from the channel
-                const messages = await channel.messages.fetch({ limit: 50 });
-                const botMessages = [...messages.values()]
-                    .filter((message) => message.author.id === client.user.id)
-                    .slice(0, 20);
-
-                let unprocAmazonArr = [];
-                let unprocNonAmazonArr = [];
-                let amazonCount = 0;
-                let nonAmazonCount = 0;
-
-                botMessages.forEach((message) => {
-                    if (
-                        message.embeds.length > 0 &&
-                        message.content.includes(config.DISC_AMZ_ORDER_TAG)
-                    ) {
-                        amazonCount++;
-                        unprocAmazonArr.push(message.embeds[0].footer?.text);
-                    }
-
-                    if (
-                        message.embeds.length > 0 &&
-                        message.content.includes(config.DISC_NON_AMZ_ORDER_TAG)
-                    ) {
-                        nonAmazonCount++;
-                        unprocNonAmazonArr.push(message.embeds[0].footer?.text);
-                    }
-
-                    console.log(`[${message.author.tag}]: ${message.content}`);
-                });
-                console.log(
-                    `Amazon: ${amazonCount}, Non-Amazon: ${nonAmazonCount}`
-                );
-
-                // print shame in order-discussion channel :(
-                let discuss_channel_id = config.DISCUSSION_CH_ID;
-                const discuss_channel = await client.channels.fetch(
-                    discuss_channel_id
-                );
-                if (!discuss_channel) {
-                    return res
-                        .status(404)
-                        .send({ error: "discuss_channel_id not found." });
-                }
-                console.log(
-                    `Fetching discussion discord channel with ID: ${discuss_channel_id}`
-                );
-                if (amazonCount > 0) {
-                    let messageContent = `<@${config.DISC_AMZ_ORDER_TAG}>, you have ${amazonCount} unprocessed items:\n\n`;
-                    unprocAmazonArr.forEach((item, index) => {
-                        messageContent += `${index + 1}. ${item}\n`;
-                    });
-                    await discuss_channel.send(messageContent);
-                }
-                if (nonAmazonCount > 0) {
-                    let messageContent = `<@${config.DISC_NON_AMZ_ORDER_TAG}>, you have ${nonAmazonCount} unprocessed items:\n\n`;
-                    unprocNonAmazonArr.forEach((item, index) => {
-                        messageContent += `${index + 1}. ${item}\n`;
-                    });
-                    await discuss_channel.send(messageContent);
-                }
-            } catch (error) {
-                console.error("Error reading messages:", error);
-            }
-        },
+            
+            // Get the notify option (default to true if not specified)
+            const shouldNotify = interaction.options.getBoolean('notify') ?? true;
+            
+            // Use the shared functionality
+            await checkUnprocessedOrders(client, config, shouldNotify, interaction);
+        }
     };
 };
