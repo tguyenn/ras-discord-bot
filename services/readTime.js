@@ -23,18 +23,27 @@ module.exports = (client, config) => {
             console.log(
                 `[TIME] It is currently ${currentHour}:${currentMinute} CDT`
             );
-            
+
             // Check if it's 11:00 PM (23:00)
             if (currentHour === 23 && currentMinute === 0) {
-                console.log("It's 11:00 PM! Checking for unprocessed orders...");
-                
+                console.log(
+                    "It's 11:00 PM! Checking for unprocessed orders..."
+                );
+
                 // Use the shared functionality with notifyChannel=true and no interaction
-                const results = await checkUnprocessedOrders(client, config, true);
-                console.log(`Scheduled check completed. Found ${results.amazonCount} Amazon and ${results.nonAmazonCount} non-Amazon unprocessed orders.`);
+                const results = await checkUnprocessedOrders(
+                    client,
+                    config,
+                    true
+                );
+                console.log(
+                    `Scheduled check completed. Found ${results.amazonCount} Amazon and ${results.nonAmazonCount} non-Amazon unprocessed orders.`
+                );
             }
         } catch (error) {
             console.error("Error in readMessagesTime interval:", error);
-        }    }, 60000); // Check every minute
+        }
+    }, 60000); // Check every minute
 
     process.on("SIGINT", () => {
         // clean up so no memory leaks
