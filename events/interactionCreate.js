@@ -72,7 +72,6 @@ module.exports = (client, config) => {
             }
         }
     };
-
     /**
      * Handle button interactions
      * @param {Discord.ButtonInteraction} interaction - The button interaction
@@ -80,31 +79,34 @@ module.exports = (client, config) => {
      * @param {Object} config - Configuration object
      */
     async function handleButtonInteraction(interaction, client, config) {
-        // Defer the reply to avoid interaction timeout
-        await interaction.deferReply({ ephemeral: true });
-
         const customId = interaction.customId;
 
         // Process different buttons based on customId
         switch (customId) {
             case "delete_button":
+                // For delete_button, defer the reply immediately
+                await interaction.deferReply({ ephemeral: true });
                 await handleDeleteButton(interaction, client, config);
                 break;
 
             case "fetch_amazon_ESL_forms":
+                // Let the Amazon handler manage its own replies
                 await handleAmazonESLForms(interaction, client, config);
                 break;
 
             case "help_previous":
+                // For help navigation, use update instead of reply
                 await handleHelpNavigation(interaction, "previous");
                 break;
 
             case "help_next":
+                // For help navigation, use update instead of reply
                 await handleHelpNavigation(interaction, "next");
                 break;
 
             default:
-                await interaction.editReply({
+                // For unknown buttons, reply immediately
+                await interaction.reply({
                     content: `Unknown button: ${customId}. This interaction is not handled.`,
                     ephemeral: true,
                 });
@@ -246,7 +248,7 @@ module.exports = (client, config) => {
      */
     async function handleAmazonESLForms(interaction, client, config) {
         try {
-            // Check user permissions
+            // Check user permissions first, before any deferral or reply
             if (
                 interaction.user.id === config.DISC_AMZ_ORDER_TAG ||
                 interaction.user.id === config.DISC_DEBUG_TAG
@@ -254,6 +256,12 @@ module.exports = (client, config) => {
                 console.log(
                     `Interaction triggered by authorized user: ${interaction.user.tag}`
                 );
+
+                // Authorized user, defer the reply before proceeding
+                await interaction.deferReply({
+                    content: "Waiting for Google Apps Script to finish...",
+                    ephemeral: true,
+                });
             } else {
                 console.log(
                     `Interaction triggered by unauthorized user: ${interaction.user.tag}`
@@ -271,10 +279,9 @@ module.exports = (client, config) => {
             const tag = message.embeds[numEmbeds - 1].footer?.text; // grab tag from last embed
 
             if (!tag) {
-                await interaction.reply({
+                await interaction.editReply({
                     content:
                         "Could not find the order reference in this message.",
-                    ephemeral: true,
                 });
                 return;
             }
@@ -298,12 +305,6 @@ module.exports = (client, config) => {
             }
 
             console.log("sending quantities:", quantities);
-
-            // Defer the reply to avoid interaction timeout
-            await interaction.deferReply({
-                content: "Waiting for Google Apps Script to finish...",
-                ephemeral: true,
-            });
 
             try {
                 // Send request to Google Apps Script
@@ -332,7 +333,7 @@ module.exports = (client, config) => {
                             .setDescription(
                                 `[ESL Link ${i + 1}](${
                                     eslLinks[i]
-                                }) - tag ${tag}`
+                                }) | tag ${tag}`
                             )
                             .setColor(color);
                         await interaction.followUp({
@@ -367,11 +368,20 @@ module.exports = (client, config) => {
             }
         } catch (error) {
             console.error("Error handling Amazon ESL forms button:", error);
-            await interaction.editReply({
-                content:
-                    "Failed to fetch Amazon ESL forms. Please try again or contact an administrator.",
-                ephemeral: true,
-            });
+            // Only try to reply if we haven't already
+            if (!interaction.replied && !interaction.deferred) {
+                await interaction.reply({
+                    content:
+                        "Failed to fetch Amazon ESL forms. Please try again or contact an administrator.",
+                    ephemeral: true,
+                });
+            } else if (interaction.deferred) {
+                await interaction.editReply({
+                    content:
+                        "Failed to fetch Amazon ESL forms. Please try again or contact an administrator.",
+                    ephemeral: true,
+                });
+            }
         }
     }
 

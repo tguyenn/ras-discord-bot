@@ -34,7 +34,7 @@ module.exports = (app, client, config, Discord) => {
             const messagePayload = {};
             if (content) messagePayload.content = content;
             if (embeds) messagePayload.embeds = embeds;
-            console.log("Copied message payload!");
+            console.log("Copied GAS message payload!");
             // console.log(embeds);
 
             // Create buttons (optional)
@@ -56,6 +56,7 @@ module.exports = (app, client, config, Discord) => {
 
             // Send the message
             await API_channel.send(messagePayload);
+            console.log("Sent GAS message!");
             return res
                 .status(200)
                 .send({ success: true, message: "Message sent successfully!" });
