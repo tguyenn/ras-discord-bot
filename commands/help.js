@@ -67,7 +67,7 @@ module.exports = (client, config) => {
                 .setLabel("Visit Website")
                 .setStyle("LINK")
                 .setURL("https://example.com") // Replace with your website URL
-        );        // Check if the command is executed as a message or slash command
+        ); // Check if the command is executed as a message or slash command
         if (message) {
             // Standard message command
             message.channel.send({ embeds: [embed], components: [row] });

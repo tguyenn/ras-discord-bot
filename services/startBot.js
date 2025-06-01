@@ -58,7 +58,7 @@ function startBot(client, config, Discord, axios) {
             Array.from(client.commands.values()).length < 1
                 ? "s"
                 : ""
-        } was loaded!`
+        } loaded!`
     );
 
     //Loading events
