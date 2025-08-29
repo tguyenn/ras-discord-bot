@@ -117,6 +117,7 @@ module.exports = (client, config) => {
     }
     /**
      * Handle the place button (Explode) interaction
+     * Moves the order into the placed channel
      * @param {Discord.ButtonInteraction} interaction
      * @param {Discord.Client} client
      * @param {Object} config
@@ -257,7 +258,8 @@ module.exports = (client, config) => {
         }
     }
     /**
-     * Handle the place button (Explode) interaction
+     * Handle the receive button interaction
+     * Moves the order into receive channel
      * @param {Discord.ButtonInteraction} interaction
      * @param {Discord.Client} client
      * @param {Object} config
@@ -325,7 +327,7 @@ module.exports = (client, config) => {
                     );
 
                     // Send to placed channel with modified content and original embeds
-                    await placedChannel.send({
+                    await receivedChannel.send({
                         content: newMessageContent,
                         embeds: embeds,
                         components: [row]
