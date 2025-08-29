@@ -1,6 +1,6 @@
 // Imports
 const { SlashCommandBuilder } = require("@discordjs/builders");
-const { MessageEmbed, CommandInteraction, Client } = require("discord.js");
+const { CommandInteraction, Client } = require("discord.js");
 
 /**
  * @param {Client} client - The Discord client instance.
@@ -8,40 +8,23 @@ const { MessageEmbed, CommandInteraction, Client } = require("discord.js");
  */
 module.exports = (client, config) => {
     return {
-        name: "debug-embed",
+        name: "send-message",
         category: "Admin",
-        description:
-            "Create and send an embed with custom title and description",
+        description: "Send a plaintext message to a channel",
         data: new SlashCommandBuilder()
-            .setName("debug-embed")
-            .setDescription(
-                "Create and send an embed with custom title and description"
-            )
+            .setName("send-message")
+            .setDescription("Send a plaintext message to a channel")
             .addStringOption((option) =>
                 option
-                    .setName("title")
-                    .setDescription("The title of the embed")
+                    .setName("message")
+                    .setDescription("The message content to send")
                     .setRequired(true)
-            )
-            .addStringOption((option) =>
-                option
-                    .setName("description")
-                    .setDescription("The description of the embed")
-                    .setRequired(true)
-            )
-            .addStringOption((option) =>
-                option
-                    .setName("color")
-                    .setDescription(
-                        "The color of the embed (hex code or basic color name)"
-                    )
-                    .setRequired(false)
             )
             .addChannelOption((option) =>
                 option
                     .setName("channel")
                     .setDescription(
-                        "The channel to send the embed to (defaults to current channel)"
+                        "The channel to send the message to (defaults to current channel)"
                     )
                     .setRequired(false)
             ),
@@ -75,48 +58,38 @@ module.exports = (client, config) => {
                 await interaction.deferReply({ ephemeral: true });
 
                 // Get command options
-                const title = interaction.options.getString("title");
-                const description =
-                    interaction.options.getString("description");
-                const color =
-                    interaction.options.getString("color") || "#FF6700"; // Default to orange if not specified
+                const messageContent = interaction.options.getString("message");
                 const targetChannel =
                     interaction.options.getChannel("channel") ||
                     interaction.channel;
 
                 // Basic validation
-                if (!title || !description) {
+                if (!messageContent) {
                     await interaction.editReply({
-                        content: "Both title and description are required.",
+                        content: "Message content is required.",
                         ephemeral: true,
                     });
                     return;
                 }
 
                 try {
-                    // Create the embed
-                    const embed = new MessageEmbed()
-                        .setTitle(title)
-                        .setDescription(description)
-                        .setColor(color);
-
-                    // Send the embed to the target channel
-                    await targetChannel.send({ embeds: [embed] });
+                    // Send the message to the target channel
+                    await targetChannel.send(messageContent);
 
                     // Confirm to the user
                     await interaction.editReply({
-                        content: `Embed successfully sent to <#${targetChannel.id}>`,
+                        content: `Message successfully sent to <#${targetChannel.id}>`,
                         ephemeral: true,
                     });
                 } catch (error) {
-                    console.error("Error sending embed:", error);
+                    console.error("Error sending message:", error);
                     await interaction.editReply({
-                        content: `Failed to send embed: ${error.message}`,
+                        content: `Failed to send message: ${error.message}`,
                         ephemeral: true,
                     });
                 }
             } catch (error) {
-                console.error("Error executing debug-embed command:", error);
+                console.error("Error executing send-message command:", error);
 
                 // Handle reply based on interaction state
                 if (!interaction.replied && !interaction.deferred) {

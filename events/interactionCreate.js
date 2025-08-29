@@ -83,10 +83,13 @@ module.exports = (client, config) => {
 
         // Process different buttons based on customId
         switch (customId) {
-            case "delete_button":
-                // For delete_button, defer the reply immediately
+            case "place_button":
                 await interaction.deferReply({ ephemeral: true });
-                await handleDeleteButton(interaction, client, config);
+                await handlePlaceButton(interaction, client, config);
+                break;
+
+            case "receive_button":
+                await handleReceiveButton(interaction, client, config);
                 break;
 
             case "fetch_amazon_ESL_forms":
@@ -113,12 +116,12 @@ module.exports = (client, config) => {
         }
     }
     /**
-     * Handle the delete button (Explode) interaction
+     * Handle the place button (Explode) interaction
      * @param {Discord.ButtonInteraction} interaction
      * @param {Discord.Client} client
      * @param {Object} config
      */
-    async function handleDeleteButton(interaction, client, config) {
+    async function handlePlaceButton(interaction, client, config) {
         try {
             // Check if the user has permission to use this button
             // Only allow users with specific roles or IDs defined in config
@@ -143,12 +146,12 @@ module.exports = (client, config) => {
 
             // Send a copy of the message to the processed channel before deleting
             try {
-                const processedChannelId = config.PROCESSED_CH_ID;
-                const processedChannel = await client.channels.fetch(
-                    processedChannelId
+                const placedChannelId = config.PLACED_CH_ID;
+                const placedChannel = await client.channels.fetch(
+                    placedChannelId
                 );
 
-                if (!processedChannel) {
+                if (!placedChannel) {
                     console.error("Processed channel not found");
                 } else {
                     // Create a copy of all embeds in the original message
@@ -172,13 +175,22 @@ module.exports = (client, config) => {
                     // Prepare the new message content
                     const newMessageContent = `\n${contentWithoutFirstWord}`;
 
-                    // Send to processed channel with modified content and original embeds
-                    await processedChannel.send({
+                    // TODO: add received button to new message
+                    const row = new Discord.MessageActionRow().addComponents(
+                        new Discord.MessageButton()
+                            .setCustomId("receive_button")
+                            .setLabel(config.DISC_PLACE_BTN_MSG)
+                            .setStyle("SUCCESS")
+                    );
+
+                    // Send to placed channel with modified content and original embeds
+                    await placedChannel.send({
                         content: newMessageContent,
                         embeds: embeds,
+                        components: [row]
                     });
                     console.log(
-                        `Order copied to processed channel by ${interaction.user.tag}`
+                        `Order copied to placed channel by ${interaction.user.tag}`
                     );
 
                     // Send data to Google Apps Script
@@ -212,20 +224,24 @@ module.exports = (client, config) => {
                 }
             } catch (err) {
                 console.error("Error sending to processed channel:", err);
-                // Continue with deletion even if copying fails
+                await interaction.editReply({
+                    content: config.DISC_ERROR,
+                    ephemeral: true,
+                });
+                return; // dont delete if something broke
             }
 
             // Reply with the configured confirm message
             await interaction.editReply({
-                content: config.DISC_CONFIRM_REPLY_MSG,
+                content: config.DISC_PLACE_REPLY_MSG,
                 ephemeral: true,
             });
 
             // If this message has a thread, delete it first
-            if (message.hasThread) {
-                const thread = message.thread;
-                if (thread) await thread.delete();
-            }
+            // if (message.hasThread) {
+            //     const thread = message.thread;
+            //     if (thread) await thread.delete();
+            // }
 
             // Delete the original message
             await message.delete();
@@ -240,6 +256,113 @@ module.exports = (client, config) => {
             });
         }
     }
+    /**
+     * Handle the place button (Explode) interaction
+     * @param {Discord.ButtonInteraction} interaction
+     * @param {Discord.Client} client
+     * @param {Object} config
+     */
+    async function handleReceiveButton(interaction, client, config) {
+        try {
+            // Check if the user has permission to use this button
+            // Only allow users with specific roles or IDs defined in config
+            const allowedUsers = [
+                config.DISC_AMZ_ORDER_TAG,
+                config.DISC_NON_AMZ_ORDER_TAG,
+                config.DISC_DEBUG_TAG,
+            ];
+
+            const userId = interaction.user.id;
+
+            if (!allowedUsers.includes(userId)) {
+                await interaction.editReply({
+                    content: "You don't have permission to process this order.",
+                    ephemeral: true,
+                });
+                return;
+            }
+
+            // Get the message that contains the button
+            const message = interaction.message;
+
+            // Send a copy of the message to the processed channel before deleting
+            try {
+                const receivedChannelId = config.RECEIVED_CH_ID;
+                const receivedChannel = await client.channels.fetch(
+                    receivedChannelId
+                );
+
+                if (!receivedChannel) {
+                    console.error("Processed channel not found");
+                } else {
+                    // Create a copy of all embeds in the original message
+                    const embeds = message.embeds.map(
+                        (embed) => new Discord.MessageEmbed(embed)
+                    );
+
+                    // Extract the original message content and remove the first word (Discord tag)
+                    let originalContent = message.content || "";
+                    let contentWithoutFirstWord = originalContent;
+
+                    // If there's content, split by spaces and remove the first element (tag)
+                    if (originalContent.trim()) {
+                        contentWithoutFirstWord = originalContent
+                            .trim()
+                            .split("\n")
+                            .slice(1)
+                            .join("\n"); // remove ping from message before reposting
+                    }
+
+                    // Prepare the new message content
+                    const newMessageContent = `\n${contentWithoutFirstWord}`;
+
+                    // TODO: add received button to new message
+                    const row = new Discord.MessageActionRow().addComponents(
+                        new Discord.MessageButton()
+                            .setCustomId("received_button")
+                            .setLabel(config.DISC_PLACE_BTN_MSG)
+                            .setStyle("SUCCESS")
+                    );
+
+                    // Send to placed channel with modified content and original embeds
+                    await placedChannel.send({
+                        content: newMessageContent,
+                        embeds: embeds,
+                        components: [row]
+                    });
+                    console.log(
+                        `Order copied to received channel by ${interaction.user.tag}`
+                    );
+                }
+            } catch (err) {
+                console.error("Error sending to received channel:", err);
+                await interaction.editReply({
+                    content: config.DISC_ERROR,
+                    ephemeral: true,
+                });
+                return; // dont delete if something broke
+            }
+
+            // Reply with the configured confirm message
+            await interaction.editReply({
+                content: config.DISC_RECEIVE_REPLY_MSG,
+                ephemeral: true,
+            });
+
+            // Delete the original message
+            await message.delete();
+
+            console.log(`Order deleted by ${interaction.user.tag}`);
+        } catch (error) {
+            console.error("Error handling delete button:", error);
+            await interaction.editReply({
+                content:
+                    "Failed to delete the message. Please try again or contact an administrator.",
+                ephemeral: true,
+            });
+        }
+    }
+
     /**
      * Handle Amazon ESL Forms button
      * @param {Discord.ButtonInteraction} interaction

@@ -37,11 +37,10 @@ module.exports = (app, client, config, Discord) => {
             console.log("Copied GAS message payload!");
             // console.log(embeds);
 
-            // Create buttons (optional)
             const row = new Discord.MessageActionRow().addComponents(
                 new Discord.MessageButton()
-                    .setCustomId("delete_button")
-                    .setLabel(config.DISC_CONFIRM_BTN_MSG)
+                    .setCustomId("place_button")
+                    .setLabel(config.DISC_PLACE_BTN_MSG)
                     .setStyle("DANGER")
             );
             if (embeds[0].fields[3].value == "Amazon") {
