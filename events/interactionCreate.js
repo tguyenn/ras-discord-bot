@@ -180,7 +180,7 @@ module.exports = (client, config) => {
                     const row = new Discord.MessageActionRow().addComponents(
                         new Discord.MessageButton()
                             .setCustomId("receive_button")
-                            .setLabel(config.DISC_PLACE_BTN_MSG)
+                            .setLabel(config.DISC_RECEIVE_BTN_MSG)
                             .setStyle("SUCCESS")
                     );
 
@@ -238,12 +238,6 @@ module.exports = (client, config) => {
                 ephemeral: true,
             });
 
-            // If this message has a thread, delete it first
-            // if (message.hasThread) {
-            //     const thread = message.thread;
-            //     if (thread) await thread.delete();
-            // }
-
             // Delete the original message
             await message.delete();
 
@@ -295,7 +289,7 @@ module.exports = (client, config) => {
                 );
 
                 if (!receivedChannel) {
-                    console.error("Processed channel not found");
+                    console.error("received channel not found");
                 } else {
                     // Create a copy of all embeds in the original message
                     const embeds = message.embeds.map(
@@ -306,25 +300,8 @@ module.exports = (client, config) => {
                     let originalContent = message.content || "";
                     let contentWithoutFirstWord = originalContent;
 
-                    // If there's content, split by spaces and remove the first element (tag)
-                    if (originalContent.trim()) {
-                        contentWithoutFirstWord = originalContent
-                            .trim()
-                            .split("\n")
-                            .slice(1)
-                            .join("\n"); // remove ping from message before reposting
-                    }
-
                     // Prepare the new message content
                     const newMessageContent = `\n${contentWithoutFirstWord}`;
-
-                    // TODO: add received button to new message
-                    const row = new Discord.MessageActionRow().addComponents(
-                        new Discord.MessageButton()
-                            .setCustomId("received_button")
-                            .setLabel(config.DISC_PLACE_BTN_MSG)
-                            .setStyle("SUCCESS")
-                    );
 
                     // Send to placed channel with modified content and original embeds
                     await receivedChannel.send({
