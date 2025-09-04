@@ -13,7 +13,7 @@ module.exports = (client, config, Discord) => {
     const sendMessage = require("./sendMessage");
     sendMessage(app, client, config, Discord);
     const updateConfig = require("./updateConfig");
-    updateConfig(app);
+    updateConfig(app, client, config);
 
     // Start the Express server
     app.listen(PORT, () => {
