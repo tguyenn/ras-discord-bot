@@ -36,6 +36,8 @@ startBot(client, config, Discord, axios);
 const startApi = require("./api/startApi");
 startApi(client, config, Discord);
 
+
+
 // Add error handling for the Discord client
 client.on("error", (error) => {
     console.error("Discord client error:", error);

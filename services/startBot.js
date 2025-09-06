@@ -1,3 +1,5 @@
+const sendEmbedNotification = require('../services/embedNotif');
+
 // Export the startBot function
 module.exports = { startBot };
 
@@ -94,6 +96,10 @@ function startBot(client, config, Discord, axios) {
         .catch((error) => {
             console.error("Login failed:", error);
         });
+
+    sendEmbedNotification(client, config, "Message").catch(error => {
+        console.error("Failed to send startup notification:", error);
+    });
 
     // Add error event handlers for Discord client
     client.on("error", (error) => {

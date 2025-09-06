@@ -3,6 +3,7 @@ const Discord = require("discord.js");
 const hasPermission = require("./../utils/hasPermission");
 const axios = require("axios");
 
+
 module.exports = (client, config) => {
     var eventObj = {};
 
@@ -84,12 +85,10 @@ module.exports = (client, config) => {
         // Process different buttons based on customId
         switch (customId) {
             case "place_button":
-                await interaction.deferReply({ ephemeral: true });
                 await handlePlaceButton(interaction, client, config);
                 break;
                 
                 case "receive_button":
-                await interaction.deferReply({ ephemeral: true });
                 await handleReceiveButton(interaction, client, config);
                 break;
 
@@ -125,6 +124,9 @@ module.exports = (client, config) => {
      */
     async function handlePlaceButton(interaction, client, config) {
         try {
+
+            await interaction.deferReply({ ephemeral: true });
+
             // Check if the user has permission to use this button
             // Only allow users with specific roles or IDs defined in config
             const allowedUsers = [
