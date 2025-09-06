@@ -6,8 +6,6 @@ const sendEmbedNotification = require('../services/embedNotif');
 
 
 module.exports = (app, client, config) => {
-    console.log("updateConfig module loaded and registering /update-config route");
-
     app.post("/update-config", async (req, res) => {
         const newConfig = req.body;
 

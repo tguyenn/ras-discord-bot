@@ -97,9 +97,13 @@ function startBot(client, config, Discord, axios) {
             console.error("Login failed:", error);
         });
 
-    sendEmbedNotification(client, config, "Message").catch(error => {
+    sendEmbedNotification(client, config, "Bot started successfully!")
+    .then(() => {
+        console.log("Startup notification sent to Discord successfully");
+    })
+    .catch(error => {
         console.error("Failed to send startup notification:", error);
-    });
+    }); 
 
     // Add error event handlers for Discord client
     client.on("error", (error) => {
