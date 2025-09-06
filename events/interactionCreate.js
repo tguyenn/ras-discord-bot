@@ -87,8 +87,9 @@ module.exports = (client, config) => {
                 await interaction.deferReply({ ephemeral: true });
                 await handlePlaceButton(interaction, client, config);
                 break;
-
-            case "receive_button":
+                
+                case "receive_button":
+                await interaction.deferReply({ ephemeral: true });
                 await handleReceiveButton(interaction, client, config);
                 break;
 
@@ -260,6 +261,8 @@ module.exports = (client, config) => {
      */
     async function handleReceiveButton(interaction, client, config) {
         try {
+            await interaction.deferReply({ ephemeral: true });
+
             // Check if the user has permission to use this button
             // Only allow users with specific roles or IDs defined in config
             const allowedUsers = [
