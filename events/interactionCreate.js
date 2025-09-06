@@ -116,7 +116,7 @@ module.exports = (client, config) => {
         }
     }
     /**
-     * Handle the place button (Explode) interaction
+     * Handle the place button interaction
      * Moves the order into the placed channel
      * @param {Discord.ButtonInteraction} interaction
      * @param {Discord.Client} client
@@ -303,11 +303,10 @@ module.exports = (client, config) => {
                     // Prepare the new message content
                     const newMessageContent = `\n${contentWithoutFirstWord}`;
 
-                    // Send to placed channel with modified content and original embeds
+                    // Send to reception channel with modified content and original embeds
                     await receivedChannel.send({
                         content: newMessageContent,
                         embeds: embeds,
-                        components: [row]
                     });
                     console.log(
                         `Order copied to received channel by ${interaction.user.tag}`
