@@ -1,20 +1,14 @@
-# RAS Automation Discord Bot
+# RAS Orders Automation
 
-Updated (9/21/2025). TODO make this more readable and import more stuff from documentation in google docs https://docs.google.com/document/d/14fuzHv5QTbZqeqry1lfygl2T4PB1N2hq2_MsGoP_D9k/edit?tab=t.0
+TODO make this more readable and import more stuff from documentation in google docs https://docs.google.com/document/d/14fuzHv5QTbZqeqry1lfygl2T4PB1N2hq2_MsGoP_D9k/edit?tab=t.0
 
-Hello budget lover 🫵🥰
+TODO make toc and section this readme into     what this is / how to use as front end user / how it works in back end / how to develop / todos
 
-The motivation behind all this is so that ESL form users don’t have to do much more than **verify contents** and click the **form submit** button (yay 🙂)
-    
-What the next budget burden bearers must do to continue the RAS automation legacy:
-1. Update the target budget spreadsheet (currently geared to handle the dual ESL/HCB banking setup in 2025-2026) in the `Master Config Table` of the [Reusable Order](https://docs.google.com/spreadsheets/d/1Ud5ZEs9mdV4Lk5InK7P9jcXaRlwkBsqSURoN1luDPls/edit?gid=829615052#gid=829615052) 
-2. Update new funding sources in the `Grant Tracking` tab of the budget sheet as they come
-
-Whenever you need to change anything (i.e. target budget sheet, Discord channel, button text, etc.) in the automation, it is likely in the `Master Config Table` within the`Config` tab of [the Reusable Order sheet](https://docs.google.com/spreadsheets/d/1Ud5ZEs9mdV4Lk5InK7P9jcXaRlwkBsqSURoN1luDPls/edit?gid=0#gid=0). Save your changes in the sheet and submit the [Order Request Google Form](https://docs.google.com/forms/d/e/1FAIpQLSe3QJqF6wh7JAJeEL2g7kjZqMlZMkWVZXZWiLN95qWjk69KAw/viewform?usp=header) with the `Update Config` option to propagate the changes.
+Hello budget lover 🫵🥰 Please reach out to @tguyen in [UT IEEE RAS' Discord server](https://discord.gg/ehmhUTZ2NZ) for any questions :)
 
 ## Who does this benefit?
-UT IEEE Robotics and Automation Society (UT RAS) students and any other students looking to streamline their organization's budgeting
-## What does this do?
+UT IEEE Robotics and Automation Society (UT RAS) students and any other UT students looking to streamline their organization's budgeting.
+# What is this?
 Automate paperwork for material/food procurement. This automation aims to remedy all the issues outlined below by reducing the amount of effort required to place, record, and track orders. 
 ## Why?
 - Paperwork really sucks  
@@ -160,8 +154,16 @@ Our version builds on this repository by adding features like…
 
 
 
-big todo:
-port https://docs.google.com/document/u/3/d/14fuzHv5QTbZqeqry1lfygl2T4PB1N2hq2_MsGoP_D9k/edit?tab=t.0 to markdown
+
+
+
+
+
+
+
+
+
+
 
 
 # TODO (priority ordered)
@@ -237,3 +239,14 @@ port https://docs.google.com/document/u/3/d/14fuzHv5QTbZqeqry1lfygl2T4PB1N2hq2_M
   - Running on my personal card right now lol  
 
 ---
+
+
+
+# How to Use (front end)
+
+1. Update the target budget spreadsheet (currently geared to handle the dual ESL/HCB banking setup in 2025-2026) in the `Master Config Table` of the [Reusable Order](https://docs.google.com/spreadsheets/d/1Ud5ZEs9mdV4Lk5InK7P9jcXaRlwkBsqSURoN1luDPls/edit?gid=829615052#gid=829615052) 
+2. Update new funding sources in the `Grant Tracking` tab of the budget sheet as they come
+
+Whenever you need to change anything (i.e. target budget sheet, target Discord channel, button text, etc.) in the automation, it is likely in the `Master Config Table` within the`Config` tab of [the Reusable Order sheet](https://docs.google.com/spreadsheets/d/1Ud5ZEs9mdV4Lk5InK7P9jcXaRlwkBsqSURoN1luDPls/edit?gid=0#gid=0). 
+1. Save your changes in the sheet
+2. Submit the [Order Request Google Form](https://docs.google.com/forms/d/e/1FAIpQLSe3QJqF6wh7JAJeEL2g7kjZqMlZMkWVZXZWiLN95qWjk69KAw/viewform?usp=header) with the `Update Config` option to propagate the changes.
