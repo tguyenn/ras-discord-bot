@@ -1,6 +1,6 @@
 # RAS Automation Discord Bot
 
-Updated (9/21/2025)
+Updated (9/21/2025). TODO make this more readable and import more stuff from documentation in google docs https://docs.google.com/document/d/14fuzHv5QTbZqeqry1lfygl2T4PB1N2hq2_MsGoP_D9k/edit?tab=t.0
 
 Hello budget lover 🫵🥰
 
@@ -10,14 +10,14 @@ What the next budget burden bearers must do to continue the RAS automation legac
 1. Update the target budget spreadsheet (currently geared to handle the dual ESL/HCB banking setup in 2025-2026) in the `Master Config Table` of the [Reusable Order](https://docs.google.com/spreadsheets/d/1Ud5ZEs9mdV4Lk5InK7P9jcXaRlwkBsqSURoN1luDPls/edit?gid=829615052#gid=829615052) 
 2. Update new funding sources in the `Grant Tracking` tab of the budget sheet as they come
 
-Whenever you need to change anything (i.e. target budget sheet, Discord channel, button text, etc.) in the automation, it is likely in the `Master Config Table` within the`Config` tab of [the Reusable Order sheet](https://docs.google.com/spreadsheets/d/1Ud5ZEs9mdV4Lk5InK7P9jcXaRlwkBsqSURoN1luDPls/edit?gid=0#gid=0). Save your changes in the sheet and submit the [Order Request Google Form](https://docs.google.com/forms/d/e/1FAIpQLSe3QJqF6wh7JAJeEL2g7kjZqMlZMkWVZXZWiLN95qWjk69KAw/viewform?usp=header) with the `Update Config` option to propagate the changes
+Whenever you need to change anything (i.e. target budget sheet, Discord channel, button text, etc.) in the automation, it is likely in the `Master Config Table` within the`Config` tab of [the Reusable Order sheet](https://docs.google.com/spreadsheets/d/1Ud5ZEs9mdV4Lk5InK7P9jcXaRlwkBsqSURoN1luDPls/edit?gid=0#gid=0). Save your changes in the sheet and submit the [Order Request Google Form](https://docs.google.com/forms/d/e/1FAIpQLSe3QJqF6wh7JAJeEL2g7kjZqMlZMkWVZXZWiLN95qWjk69KAw/viewform?usp=header) with the `Update Config` option to propagate the changes.
 
-# Who
-UT IEEE Robotics and Automation Society (UT RAS) students
-# What
-Automate paperwork for material/food procurement  
-# Why
-Paperwork sucks  
+## Who does this benefit?
+UT IEEE Robotics and Automation Society (UT RAS) students and any other students looking to streamline their organization's budgeting
+## What does this do?
+Automate paperwork for material/food procurement. This automation aims to remedy all the issues outlined below by reducing the amount of effort required to place, record, and track orders. 
+## Why?
+- Paperwork really sucks  
 - UT Austin's Engineering Org Management's (Engineering Student Life (ESL)) requisition form is long, tedious, and requires compiling various information / spreadsheets for submission  
     - Mind numbing for people that have to submit the form over and over again, which is frequent for our org due to the nature of requiring many materials  
 - There was no easy way to:
@@ -40,8 +40,7 @@ Paperwork sucks
 <img src="./docs/old_bad_order.png" alt="bad pic alt text" height="300"/>
 
 
-This automation aims to remedy all these issues by reducing the amount of effort required to place, record, and track orders. Here is what the front facing order system looks like now:
-
+Here is what the front facing order system looks like now:
 <img src="./docs/improved_order.png" alt="good pic alt text" height="600"/>
 
 ---
