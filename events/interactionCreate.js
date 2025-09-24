@@ -84,13 +84,13 @@ module.exports = (client, config) => {
 
         // Process different buttons based on customId
         switch (customId) {
-            case ("place_button" || "delete_button"):
+            case ("place_button"):
                 await handlePlaceButton(interaction, client, config);
                 break;
                 
-                case "receive_button":
-                await handleReceiveButton(interaction, client, config);
-                break;
+            case "receive_button":
+            await handleReceiveButton(interaction, client, config);
+            break;
 
             case "fetch_amazon_ESL_forms":
                 // Let the Amazon handler manage its own replies
