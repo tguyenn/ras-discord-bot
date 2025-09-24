@@ -84,7 +84,7 @@ module.exports = (client, config) => {
 
         // Process different buttons based on customId
         switch (customId) {
-            case "place_button":
+            case ("place_button" || "delete_button"):
                 await handlePlaceButton(interaction, client, config);
                 break;
                 
