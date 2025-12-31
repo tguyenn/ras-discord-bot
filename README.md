@@ -4,11 +4,15 @@ TODO make this more readable and import more stuff from documentation in google 
 
 TODO make toc and section this readme into     what this is / how to use as front end user / how it works in back end / how to develop / todos
 
+TODO refactor code to be better™️
+  - modular file system good, but need to make modular functions to improve code reuse
+    - i.e. propagation of message to another channel is very messy at the moment
+
 Hello budget lover 🫵🥰 Please reach out to @tguyen in [UT IEEE RAS' Discord server](https://discord.gg/ehmhUTZ2NZ) for any questions :)
 
 ## Who does this benefit?
 UT IEEE Robotics and Automation Society (UT RAS) students and any other UT students looking to streamline their organization's budgeting.
-# What is this?
+## What is this?
 Automate paperwork for material/food procurement. This automation aims to remedy all the issues outlined below by reducing the amount of effort required to place, record, and track orders. 
 ## Why?
 - Paperwork really sucks  
@@ -37,9 +41,49 @@ Automate paperwork for material/food procurement. This automation aims to remedy
 Here is what the front facing order system looks like now:
 <img src="./docs/improved_order.png" alt="good pic alt text" height="600"/>
 
+## How do I set this up?
+These instructions assume you are setting up on a clean Linux environment (ran on Amazon Linux and Raspberry Pi OS)
+
+Ensure system is at latest update and install git
+```
+sudo apt update && sudo apt
+sudo apt install git
+```
+
+Clone and enter discord-bot repository
+```
+git clone https://github.com/tguyenn/ras-discord-bot.git
+cd ras-discord-bot
+```
+
+Install Node.js
+```
+sudo apt install npm
+```
+
+Verify proper Node.js installation
+```
+node -v
+```
+
+Install requisite packages
+```
+npm install pm2@latest -g
+npm install discord.js
+```
+
+Need to create /config/config.json file (todo: show sample)
+
+Register process with PM2 and set it to start on device bootup
+```
+pm2 start index.js --name discord-bot
+pm2 startup (follow instructions - copy paste given command)
+pm2 save
+```
+
 ---
 
-# Manyfold Path to Greatness (High Level Overview)
+# How does this system work?
 
 This automated system is broken up into two parts:
 1. **Google Apps Script (GAS)**  
@@ -50,7 +94,7 @@ This automated system is broken up into two parts:
    - Listens for HTTP requests from GAS  
    - Takes user input in Discord to mark orders as placed in Google sheet budget  
 
-## Detailed
+## Detailed System overiew
 1. Someone fills out Reusable Order and submits Google Form with appropriate answer  
 2. Script parses Google Form answer and determines what to do  
    - If **Materials**  
@@ -71,7 +115,7 @@ This automated system is broken up into two parts:
      - Send all script properties to bot  
      - Restart bot  
      - Stop execution  
-3. Script inserts data into 2024-2025 Budget (master budget sheet)  
+3. Script inserts data into Master Budget Sheet  
 4. Script sends order data to Discord bot that runs on AWS EC2 instance, which then publishes it in orders channel  
 5. Discord bot listens for order placement confirmation via button interaction in orders channel and moves corresponding order to processed-orders channel  
 6. Discord bot sends request to GAS web app to mark corresponding order entries as placed  

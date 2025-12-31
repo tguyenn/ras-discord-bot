@@ -44,6 +44,9 @@ client.on("error", (error) => {
 });
 
 // Handle graceful shutdown
+/*
+ ts doesnt work lol
+*/
 process.on("SIGINT", async () => {
     console.log("Received SIGINT signal. Shutting down gracefully...");
 

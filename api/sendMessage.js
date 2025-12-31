@@ -1,4 +1,4 @@
-// API Endpoint to Send a Message
+// API Endpoint to forward message to Discord
 module.exports = (app, client, config, Discord) => {
     app.post("/send-message", async (req, res) => {
         const { content, embeds } = req.body;
